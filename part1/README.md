@@ -25,7 +25,7 @@ Ce document rassemble l'ensemble des diagrammes UML produits lors de la phase de
 
 ### 🖼️ Diagramme
 
-![Architecture en couches]([layer_architecture.png](https://github.com/LenyBl/holbertonschool-hbnb/blob/c5914e3e0d66ebd7c184157eb177d6a6a3e93960/part1/diagram_high_package.png))
+![Architecture en couches](https://github.com/LenyBl/holbertonschool-hbnb/blob/c5914e3e0d66ebd7c184157eb177d6a6a3e93960/part1/diag_of_class.png)
 
 ### 📝 Notes Explicatives
 
