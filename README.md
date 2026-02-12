@@ -12,9 +12,9 @@
   `POST /api/users`, `POST /api/places`, `POST /api/reviews`, `GET /api/places`
 
 ---
-![Alt text](https://github.com/LenyBl/holbertonschool-hbnb/blob/c5914e3e0d66ebd7c184157eb177d6a6a3e93960/part1/diag_of_class.png)
-## 2) Class Diagram
 
+## 2) Class Diagram
+![Alt text](https://github.com/LenyBl/holbertonschool-hbnb/blob/c5914e3e0d66ebd7c184157eb177d6a6a3e93960/part1/diag_of_class.png)
 ### **User**
 - Stores user data: name, email, password, admin flag, timestamps.
 - Main actions shown: register, update profile, delete, list places/reviews.
