@@ -8,7 +8,8 @@
 2. [High-Level Architecture Diagram (Package Diagram)](#2-high-level-architecture-diagram)
 3. [Class Diagram](#3-class-diagram)
 4. [Sequence Diagrams](#4-sequence-diagrams)
-6. [Conclusion](#5-conclusion)
+5. [Conclusion](#5-conclusion)
+6. [Authors](#6-authors)
 
 ---
 
@@ -369,5 +370,10 @@ The three diagrams are **globally consistent** with each other:
 This documentation base will serve as a **reference** for the implementation of the different layers of the application.
 
 ---
+
+## 6. Authors
+
+- [Blee Leny](https://github.com/LenyBl)
+- [Jourdan Auxance](https://github.com/JAuxance)
 
 *Document written as part of the HBnB project — Holberton School*
