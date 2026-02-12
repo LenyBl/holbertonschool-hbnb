@@ -1,6 +1,3 @@
-### README (Downloadable) — Project Documentation (Diagrams)
-
-> Copy the content below into a file named `README.md`.
 
 ---
 
@@ -37,7 +34,7 @@
 ---
 
 ## 3) Architecture Diagram
-
+![Alt text] ()
 - **Presentation Layer**: `UserController`, `PlaceController`, `ReviewController`, `AmenityController`
 - **Facade**: sits between controllers and business objects (simplifies calls)
 - **Business Logic Layer**: domain objects `User`, `Place`, `Review`, `Amenity`
