@@ -376,4 +376,4 @@ This documentation base will serve as a **reference** for the implementation of 
 - [Blee Leny](https://github.com/LenyBl)
 - [Jourdan Auxance](https://github.com/JAuxance)
 
-*Document written as part of the HBnB project — Holberton School*![holberton_logo]https://github.com/LenyBl/holbertonschool-hbnb/blob/dev/Image/holbertonschool-1194878168.jpg
+*Document written as part of the HBnB project — Holberton School* ![holberton_logo](https://github.com/LenyBl/holbertonschool-hbnb/blob/dev/Image/holbertonschool-1194878168.jpg)
