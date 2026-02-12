@@ -377,5 +377,5 @@ This documentation base will serve as a **reference** for the implementation of 
 - [Jourdan Auxance](https://github.com/JAuxance)
 
 *Document written as part of the HBnB project – Holberton School* &nbsp;&nbsp;
-<a href="https://www.holbertonschool.fr/"><img src="https://github.com/user-attachments/assets/7ec82675-15fc-4360-b5dc-eb344deeff06" width="70" align="middle" /></a>
+<a href="https://www.holbertonschool.fr/" target="_blank"><img src="https://github.com/user-attachments/assets/7ec82675-15fc-4360-b5dc-eb344deeff06" width="70" align="middle" /></a>
 
