@@ -376,4 +376,6 @@ This documentation base will serve as a **reference** for the implementation of 
 - [Blee Leny](https://github.com/LenyBl)
 - [Jourdan Auxance](https://github.com/JAuxance)
 
-*Document written as part of the HBnB project Holberton School*    <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/7ec82675-15fc-4360-b5dc-eb344deeff06" />
+*Document written as part of the HBnB project – Holberton School* &nbsp;&nbsp;
+<img src="https://github.com/user-attachments/assets/7ec82675-15fc-4360-b5dc-eb344deeff06" width="40" align="middle" />
+
