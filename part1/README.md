@@ -1,110 +1,108 @@
-# 📘 Documentation Technique compete — HBnB
+# 📘 Complete Technical Documentation — HBnB
 
 ---
 
-## Table des Matières
+## Table of Contents
 
 1. [Introduction](#1-introduction)
-2. [Diagramme d'Architecture en Couches (Package Diagram)](#2-diagramme-darchitecture-en-couches)
-3. [Diagramme de Classes (Class Diagram)](#3-diagramme-de-classes)
-4. [Diagrammes de Séquence (Sequence Diagrams)](#4-diagrammes-de-séquence)
-5. [Vérification de Cohérence](#5-vérification-de-cohérence)
+2. [High-Level Architecture Diagram (Package Diagram)](#2-high-level-architecture-diagram)
+3. [Class Diagram](#3-class-diagram)
+4. [Sequence Diagrams](#4-sequence-diagrams)
+5. [Consistency Verification](#5-consistency-verification)
 6. [Conclusion](#6-conclusion)
 
 ---
 
 ## 1. Introduction
 
-Le projet **HBnB** est une application inspirée d'AirBnB, permettant aux utilisateurs de s'inscrire, de publier des lieux (places), de laisser des avis (reviews) et de gérer des équipements (amenities). L'architecture repose sur un modèle **3-tiers** (Presentation, Business Logic, Persistence) garantissant une séparation claire des responsabilités.
+The **HBnB** project is an application inspired by AirBnB, allowing users to register, publish places, leave reviews, and manage amenities. The architecture is based on a **3-tier model** (Presentation, Business Logic, Persistence) ensuring a clear separation of concerns.
 
-Ce document rassemble l'ensemble des diagrammes UML produits lors de la phase de conception, accompagnés de notes explicatives et d'une analyse de cohérence.
+This document gathers all the UML diagrams produced during the design phase, along with explanatory notes and a consistency analysis.
 
 ---
 
-## 2. Diagramme d'Architecture en Couches (Package Diagram)
+## 2. High-Level Architecture Diagram (Package Diagram)
 
-### 🖼️ Diagramme
+### 🖼️ Diagram
 
-![Architecture en couches](https://github.com/LenyBl/holbertonschool-hbnb/blob/c5914e3e0d66ebd7c184157eb177d6a6a3e93960/part1/diagram_high_package.png)
+![Layered Architecture](https://github.com/LenyBl/holbertonschool-hbnb/blob/c5914e3e0d66ebd7c184157eb177d6a6a3e93960/part1/diagram_high_package.png)
 
-### 📝 Notes Explicatives
+### 📝 Explanatory Notes
 
-#### 2.1 — Presentation Layer (Couche de Présentation)
+#### 2.1 — Presentation Layer
 
-| Composant             | Rôle                                                                  |
-| --------------------- | --------------------------------------------------------------------- |
-| **UserController**    | Expose les endpoints REST relatifs aux utilisateurs (`/api/users`)    |
-| **PlaceController**   | Expose les endpoints REST relatifs aux lieux (`/api/places`)          |
-| **ReviewController**  | Expose les endpoints REST relatifs aux avis (`/api/reviews`)          |
-| **AmenityController** | Expose les endpoints REST relatifs aux équipements (`/api/amenities`) |
+| Component | Role |
+|---|---|
+| **UserController** | Exposes REST endpoints related to users (`/api/users`) |
+| **PlaceController** | Exposes REST endpoints related to places (`/api/places`) |
+| **ReviewController** | Exposes REST endpoints related to reviews (`/api/reviews`) |
+| **AmenityController** | Exposes REST endpoints related to amenities (`/api/amenities`) |
 
-- C'est le **point d'entrée** de toutes les requêtes HTTP venant du client.
-- Les contrôleurs ne contiennent **aucune logique métier** ; ils délèguent immédiatement le traitement à la couche inférieure.
-- Chaque contrôleur communique avec la Business Logic Layer via le **pattern Facade**, ce qui garantit un couplage faible entre les couches.
+- This is the **entry point** for all HTTP requests coming from the client.
+- Controllers contain **no business logic**; they immediately delegate processing to the layer below.
+- Each controller communicates with the Business Logic Layer through the **Facade pattern**, ensuring loose coupling between layers.
 
-#### 2.2 — Business Logic Layer (Couche Logique Métier)
+#### 2.2 — Business Logic Layer
 
-| Composant   | Rôle                                                                                                    |
-| ----------- | ------------------------------------------------------------------------------------------------------- |
-| **User**    | Gère la logique d'inscription, de mise à jour de profil, de suppression d'un utilisateur                |
-| **Place**   | Gère la création, modification, suppression et listing des lieux, ainsi que l'ajout/retrait d'amenities |
-| **Review**  | Gère la création, modification, suppression et listing des avis par lieu                                |
-| **Amenity** | Gère la création, modification, suppression et listing des équipements                                  |
+| Component | Role |
+|---|---|
+| **User** | Handles registration logic, profile updates, and user deletion |
+| **Place** | Handles creation, modification, deletion, and listing of places, as well as adding/removing amenities |
+| **Review** | Handles creation, modification, deletion, and listing of reviews by place |
+| **Amenity** | Handles creation, modification, deletion, and listing of amenities |
 
-- Cette couche encapsule l'ensemble des **règles métier** (validations, contraintes, transformations de données).
-- Les entités métier (User, Place, Review, Amenity) sont les modèles centraux du domaine.
-- La communication avec la Persistence Layer se fait via les **repositories**, permettant de changer de mode de stockage sans impacter la logique métier.
+- This layer encapsulates all **business rules** (validations, constraints, data transformations).
+- The business entities (User, Place, Review, Amenity) are the core domain models.
+- Communication with the Persistence Layer is done through **repositories**, allowing the storage method to be changed without impacting the business logic.
 
-#### 2.3 — Persistence Layer (Couche de Persistance)
+#### 2.3 — Persistence Layer
 
-| Composant             | Rôle                                                    |
-| --------------------- | ------------------------------------------------------- |
-| **UserRepository**    | Opérations CRUD sur les données utilisateur en base     |
-| **PlaceRepository**   | Opérations CRUD sur les données des lieux en base       |
-| **ReviewRepository**  | Opérations CRUD sur les données des avis en base        |
-| **AmenityRepository** | Opérations CRUD sur les données des équipements en base |
+| Component | Role |
+|---|---|
+| **UserRepository** | CRUD operations on user data in the database |
+| **PlaceRepository** | CRUD operations on place data in the database |
+| **ReviewRepository** | CRUD operations on review data in the database |
+| **AmenityRepository** | CRUD operations on amenity data in the database |
 
-- Responsable de la **sauvegarde et récupération** des données (base de données, fichiers, mémoire).
-- Implémente le **Repository Pattern**, offrant une interface abstraite à la Business Logic Layer.
-- Permet une migration future facile (ex : passage d'un stockage en mémoire à une base SQL).
+- Responsible for **saving and retrieving** data (database, files, memory).
+- Implements the **Repository Pattern**, providing an abstract interface to the Business Logic Layer.
+- Allows easy future migration (e.g., switching from in-memory storage to an SQL database).
 
-#### 2.4 — Flux de Communication entre Couches
+#### 2.4 — Communication Flow Between Layers
 
 ```
 Client (HTTP Request)
         │
         ▼
 ┌─────────────────────┐
-│  PRESENTATION LAYER  │   ← Reçoit la requête, la parse
+│  PRESENTATION LAYER  │   ← Receives and parses the request
 │   (Controllers)      │
 └────────┬────────────┘
          │  Facade Pattern
          ▼
 ┌─────────────────────┐
-│ BUSINESS LOGIC LAYER │   ← Applique les règles métier
+│ BUSINESS LOGIC LAYER │   ← Applies business rules
 │   (Entities/Models)  │
 └────────┬────────────┘
          │  Repository Pattern
          ▼
 ┌─────────────────────┐
-│  PERSISTENCE LAYER   │   ← Stocke/Récupère en base
+│  PERSISTENCE LAYER   │   ← Stores/Retrieves from database
 │   (Repositories)     │
 └─────────────────────┘
 ```
 
-> **Point clé** : Les dépendances vont **toujours du haut vers le bas**. Aucune couche inférieure ne dépend d'une couche supérieure, ce qui respecte le principe de **dépendance inversée**.
-
 ---
 
-## 3. Diagramme de Classes (Class Diagram)
+## 3. Class Diagram
 
-### 🖼️ Diagramme
+### 🖼️ Diagram
 
-![Diagramme de classes](https://github.com/LenyBl/holbertonschool-hbnb/blob/c5914e3e0d66ebd7c184157eb177d6a6a3e93960/part1/diag_of_class.png)
+![Class Diagram](https://github.com/LenyBl/holbertonschool-hbnb/blob/c5914e3e0d66ebd7c184157eb177d6a6a3e93960/part1/diag_of_class.png)
 
-### 📝 Notes Explicatives
+### 📝 Explanatory Notes
 
-#### 3.1 — Classe `User`
+#### 3.1 — `User` Class
 
 ```
 ┌────────────────────────────────┐
@@ -127,13 +125,13 @@ Client (HTTP Request)
 └────────────────────────────────┘
 ```
 
-- **Entité centrale** du système représentant un utilisateur inscrit.
-- L'attribut `isAdmin` permet de distinguer les administrateurs des utilisateurs standards.
-- `email` sert d'identifiant unique pour l'authentification.
-- La méthode `register()` crée un nouvel utilisateur avec hachage du mot de passe.
-- Les méthodes `getPlaces()` et `getReviews()` permettent de naviguer vers les entités associées.
+- **Core entity** of the system representing a registered user.
+- The `isAdmin` attribute distinguishes administrators from standard users.
+- `email` serves as the unique identifier for authentication.
+- The `register()` method creates a new user with password hashing.
+- The `getPlaces()` and `getReviews()` methods allow navigation to associated entities.
 
-#### 3.2 — Classe `Place`
+#### 3.2 — `Place` Class
 
 ```
 ┌──────────────────────────────────┐
@@ -158,12 +156,12 @@ Client (HTTP Request)
 └──────────────────────────────────┘
 ```
 
-- Représente un **lieu/hébergement** mis en location.
-- Les coordonnées `latitude`/`longitude` permettent la géolocalisation.
-- `addAmenity()` et `removeAmenity()` gèrent la relation many-to-many avec les équipements.
-- `getReviews()` retourne tous les avis associés à ce lieu.
+- Represents a **place/accommodation** available for rent.
+- The `latitude`/`longitude` coordinates enable geolocation.
+- `addAmenity()` and `removeAmenity()` manage the many-to-many relationship with amenities.
+- `getReviews()` returns all reviews associated with this place.
 
-#### 3.3 — Classe `Review`
+#### 3.3 — `Review` Class
 
 ```
 ┌──────────────────────────────────┐
@@ -182,11 +180,11 @@ Client (HTTP Request)
 └──────────────────────────────────┘
 ```
 
-- Représente un **avis** laissé par un utilisateur sur un lieu.
-- `rating` est une note entière (ex : de 1 à 5).
-- `listByPlace()` permet de récupérer tous les avis d'un lieu spécifique.
+- Represents a **review** left by a user on a place.
+- `rating` is an integer score (e.g., from 1 to 5).
+- `listByPlace()` retrieves all reviews for a specific place.
 
-#### 3.4 — Classe `Amenity`
+#### 3.4 — `Amenity` Class
 
 ```
 ┌──────────────────────────────────┐
@@ -205,47 +203,45 @@ Client (HTTP Request)
 └──────────────────────────────────┘
 ```
 
-- Représente un **équipement/service** disponible dans un lieu (WiFi, piscine, parking, etc.).
-- Peut être partagé par plusieurs lieux (relation many-to-many).
+- Represents an **amenity/service** available at a place (WiFi, pool, parking, etc.).
+- Can be shared across multiple places (many-to-many relationship).
 
-#### 3.5 — Relations entre les Classes
+#### 3.5 — Relationships Between Classes
 
-| Relation            | Type       | Cardinalité | Description                                                                                     |
-| ------------------- | ---------- | ----------- | ----------------------------------------------------------------------------------------------- |
-| **User → Place**    | `owns`     | 1 — 0..*    | Un utilisateur possède zéro ou plusieurs lieux                                                  |
-| **User → Review**   | `writes`   | 1 — 0..*    | Un utilisateur rédige zéro ou plusieurs avis                                                    |
-| **Place → Review**  | `has`      | 1 — 0..*    | Un lieu reçoit zéro ou plusieurs avis                                                           |
-| **Place → Amenity** | `contains` | 0..* — 0..* | Un lieu contient zéro ou plusieurs équipements, un équipement peut appartenir à plusieurs lieux |
+| Relationship | Type | Cardinality | Description |
+|---|---|---|---|
+| **User → Place** | `owns` | 1 — 0..* | A user owns zero or more places |
+| **User → Review** | `writes` | 1 — 0..* | A user writes zero or more reviews |
+| **Place → Review** | `has` | 1 — 0..* | A place receives zero or more reviews |
+| **Place → Amenity** | `contains` | 0..* — 0..* | A place contains zero or more amenities; an amenity can belong to multiple places |
 
-> **Point clé** : La relation Place ↔ Amenity est une **association many-to-many**, ce qui nécessitera une table de jointure en base de données (ex : `place_amenity`).
+#### 3.6 — Common Attributes
 
-#### 3.6 — Attributs Communs
-
-Toutes les entités partagent les attributs suivants, suggérant l'existence potentielle d'une **classe abstraite de base** :
-- `id` : identifiant unique
-- `createdAt` : date de création
-- `updatedAt` : date de dernière modification
+All entities share the following attributes, suggesting the potential existence of an **abstract base class**:
+- `id`: unique identifier
+- `createdAt`: creation date
+- `updatedAt`: last modification date
 
 ---
 
-## 4. Diagrammes de Séquence (Sequence Diagrams)
+## 4. Sequence Diagrams
 
-### 🖼️ Diagramme
+### 🖼️ Diagram
 
-![Diagrammes de séquence](https://github.com/LenyBl/holbertonschool-hbnb/blob/03308167b1bf53bcc9689a9048cae1803b689636/part1/sequence_diagrams.png)
+![Sequence Diagrams](https://github.com/LenyBl/holbertonschool-hbnb/blob/03308167b1bf53bcc9689a9048cae1803b689636/part1/sequence_diagrams.png)
 
-Les diagrammes de séquence illustrent les interactions entre les **quatre participants** du système pour les appels API principaux :
+The sequence diagrams illustrate the interactions between the **four participants** of the system for the main API calls:
 
-| Participant  | Couche               | Rôle                                                      |
-| ------------ | -------------------- | --------------------------------------------------------- |
-| **Client**   | Externe              | L'utilisateur ou application qui envoie les requêtes HTTP |
-| **API**      | Presentation Layer   | Le contrôleur REST qui reçoit et répond aux requêtes      |
-| **Logic**    | Business Logic Layer | Le service/modèle qui applique la logique métier          |
-| **Database** | Persistence Layer    | Le repository qui persiste les données                    |
+| Participant | Layer | Role |
+|---|---|---|
+| **Client** | External | The user or application sending HTTP requests |
+| **API** | Presentation Layer | The REST controller that receives and responds to requests |
+| **Logic** | Business Logic Layer | The service/model that applies business logic |
+| **Database** | Persistence Layer | The repository that persists data |
 
 ---
 
-### 4.1 — POST `/api/users` (Inscription d'un utilisateur)
+### 4.1 — POST `/api/users` (User Registration)
 
 ```
 Client              API                Logic              Database
@@ -261,20 +257,18 @@ Client              API                Logic              Database
   │<──201 Created────│                   │                   │
 ```
 
-**Description du flux :**
+**Flow Description:**
 
-1. Le **Client** envoie une requête POST avec les données d'inscription (firstName, lastName, email, password).
-2. L'**API** (UserController) reçoit la requête et appelle la méthode `register()` de la couche Logic.
-3. La couche **Logic** (User) valide les données (email unique, format du mot de passe, etc.), crée l'objet User et demande la sauvegarde via `save(User)` à la Database.
-4. La **Database** (UserRepository) persiste l'utilisateur et confirme l'opération (✓).
-5. La couche Logic retourne l'objet **User** créé à l'API.
-6. L'API renvoie au Client une réponse **201 Created** avec les données de l'utilisateur.
-
-> **Validations métier attendues** : unicité de l'email, mot de passe respectant les critères de sécurité, champs obligatoires non vides.
+1. The **Client** sends a POST request with registration data (firstName, lastName, email, password).
+2. The **API** (UserController) receives the request and calls the `register()` method of the Logic layer.
+3. The **Logic** layer (User) validates the data (unique email, password format, etc.), creates the User object, and requests persistence via `save(User)` to the Database.
+4. The **Database** (UserRepository) persists the user and confirms the operation (✓).
+5. The Logic layer returns the created **User** object to the API.
+6. The API sends the Client a **201 Created** response with the user data.
 
 ---
 
-### 4.2 — POST `/api/places` (Création d'un lieu)
+### 4.2 — POST `/api/places` (Place Creation)
 
 ```
 Client              API                Logic              Database
@@ -291,20 +285,18 @@ Client              API                Logic              Database
   │<──201 Created────│                   │                   │
 ```
 
-**Description du flux :**
+**Flow Description:**
 
-1. Le **Client** envoie une requête POST avec les informations du lieu (name, description, price, latitude, longitude).
-2. L'**API** (PlaceController) transmet à la couche Logic via `createPlace()`.
-3. La couche **Logic** (Place) valide les données (prix positif, coordonnées valides, etc.), associe le lieu à l'utilisateur authentifié, puis sauvegarde via `save(Place)`.
-4. La **Database** (PlaceRepository) persiste le lieu et confirme (✓).
-5. L'objet **Place** est retourné à travers les couches.
-6. Le Client reçoit une réponse **201 Created**.
-
-> **Validations métier attendues** : prix > 0, latitude entre -90 et 90, longitude entre -180 et 180, utilisateur authentifié.
+1. The **Client** sends a POST request with place information (name, description, price, latitude, longitude).
+2. The **API** (PlaceController) forwards to the Logic layer via `createPlace()`.
+3. The **Logic** layer (Place) validates the data (positive price, valid coordinates, etc.), associates the place with the authenticated user, then saves via `save(Place)`.
+4. The **Database** (PlaceRepository) persists the place and confirms (✓).
+5. The **Place** object is returned through the layers.
+6. The Client receives a **201 Created** response.
 
 ---
 
-### 4.3 — POST `/api/reviews` (Création d'un avis)
+### 4.3 — POST `/api/reviews` (Review Creation)
 
 ```
 Client              API                Logic              Database
@@ -320,24 +312,22 @@ Client              API                Logic              Database
   │<──201 Created────│                   │                   │
 ```
 
-**Description du flux :**
+**Flow Description:**
 
-1. Le **Client** envoie une requête POST avec les données de l'avis (rating, comment, place_id, user_id).
-2. L'**API** (ReviewController) transmet via `createReview()` à la couche Logic.
-3. La couche **Logic** (Review) vérifie que :
-   - Le lieu (`place_id`) existe
-   - L'utilisateur (`user_id`) existe
-   - L'utilisateur ne donne pas un avis sur son propre lieu (règle métier optionnelle)
-   - Le rating est dans la plage autorisée
-4. La **Database** (ReviewRepository) persiste l'avis via `saveReview()` et confirme (✓).
-5. L'objet **Review** est retourné.
-6. Le Client reçoit une réponse **201 Created**.
-
-> **Validations métier attendues** : rating entre 1 et 5, place_id et user_id existants, commentaire non vide.
+1. The **Client** sends a POST request with review data (rating, comment, place_id, user_id).
+2. The **API** (ReviewController) forwards via `createReview()` to the Logic layer.
+3. The **Logic** layer (Review) verifies that:
+   - The place (`place_id`) exists
+   - The user (`user_id`) exists
+   - The user is not reviewing their own place (optional business rule)
+   - The rating is within the allowed range
+4. The **Database** (ReviewRepository) persists the review via `saveReview()` and confirms (✓).
+5. The **Review** object is returned.
+6. The Client receives a **201 Created** response.
 
 ---
 
-### 4.4 — GET `/api/places` (Récupération de la liste des lieux)
+### 4.4 — GET `/api/places` (Retrieve List of Places)
 
 ```
 Client              API                Logic              Database
@@ -350,35 +340,35 @@ Client              API                Logic              Database
   │<──200 OK─────────│                   │                   │
 ```
 
-**Description du flux :**
+**Flow Description:**
 
-1. Le **Client** envoie une requête GET simple (sans body).
-2. L'**API** (PlaceController) appelle `getPlaces()` dans la couche Logic.
-3. La couche **Logic** (Place) demande la récupération de tous les lieux via `findAll()` à la Database.
-4. La **Database** (PlaceRepository) retourne la **List\<Place\>** contenant l'ensemble des lieux.
-5. La liste est transmise à travers les couches.
-6. Le Client reçoit une réponse **200 OK** avec la liste des lieux.
-
-> **Note** : Dans une version future, cette requête pourrait accepter des paramètres de filtrage (prix max, localisation, etc.) et de pagination.
-
----
-6. Conclusion
-Cette documentation technique présente l'architecture complète du projet HBnB à travers trois types de diagrammes UML complémentaires :
-
-| Diagramme               | Ce qu'il montre                      | Perspective                   |
-| ----------------------- | ------------------------------------ | ----------------------------- |
-| Architecture en couches | Comment le système est organisé      | Structure macro (déploiement) |
-| Diagramme de classes    | Comment les données sont modélisées  | Structure micro (domaine)     |
-| Diagrammes de séquence  | Comment les composants interagissent | Comportement (runtime)        |
-
-Les trois diagrammes sont globalement cohérents entre eux :
-Les 4 entités (User, Place, Review, Amenity) apparaissent dans les trois vues.
-L'architecture 3-tiers est respectée dans les flux de séquence (Client → API → Logic → Database).
-Les méthodes définies dans le diagramme de classes correspondent aux appels visibles dans les diagrammes de séquence.
-Le pattern Facade mentionné dans l'architecture est effectivement mis en œuvre dans les interactions entre couches.
-
-Cette base documentaire servira de référence pour l'implémentation des différentes couches de l'application.
+1. The **Client** sends a simple GET request (no body).
+2. The **API** (PlaceController) calls `getPlaces()` in the Logic layer.
+3. The **Logic** layer (Place) requests retrieval of all places via `findAll()` from the Database.
+4. The **Database** (PlaceRepository) returns the **List\<Place\>** containing all places.
+5. The list is passed through the layers.
+6. The Client receives a **200 OK** response with the list of places.
 
 ---
 
-Document rédigé dans le cadre du projet HBnB — Holberton School
+## 5. Conclusion
+
+This technical documentation presents the complete architecture of the **HBnB** project through three complementary types of UML diagrams:
+
+| Diagram | What It Shows | Perspective |
+|---|---|---|
+| **Layered Architecture** | How the system is **organized** | Macro structure (deployment) |
+| **Class Diagram** | How the data is **modeled** | Micro structure (domain) |
+| **Sequence Diagrams** | How the components **interact** | Behavior (runtime) |
+
+The three diagrams are **globally consistent** with each other:
+- The **4 entities** (User, Place, Review, Amenity) appear in all three views.
+- The **3-tier architecture** is respected in the sequence flows (Client → API → Logic → Database).
+- The **methods** defined in the class diagram correspond to the calls visible in the sequence diagrams.
+- The **Facade pattern** mentioned in the architecture is effectively implemented in the inter-layer interactions.
+
+This documentation base will serve as a **reference** for the implementation of the different layers of the application.
+
+---
+
+*Document written as part of the HBnB project — Holberton School*
