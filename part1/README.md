@@ -25,7 +25,7 @@ Ce document rassemble l'ensemble des diagrammes UML produits lors de la phase de
 
 ### 🖼️ Diagramme
 
-![Architecture en couches](https://github.com/LenyBl/holbertonschool-hbnb/blob/c5914e3e0d66ebd7c184157eb177d6a6a3e93960/part1/diag_of_class.png)
+![Architecture en couches](https://github.com/LenyBl/holbertonschool-hbnb/blob/c5914e3e0d66ebd7c184157eb177d6a6a3e93960/part1/diagram_high_package.png)
 
 ### 📝 Notes Explicatives
 
@@ -100,7 +100,7 @@ Client (HTTP Request)
 
 ### 🖼️ Diagramme
 
-![Diagramme de classes]([class_diagram.png](https://github.com/LenyBl/holbertonschool-hbnb/blob/c5914e3e0d66ebd7c184157eb177d6a6a3e93960/part1/diag_of_class.png))
+![Diagramme de classes](https://github.com/LenyBl/holbertonschool-hbnb/blob/c5914e3e0d66ebd7c184157eb177d6a6a3e93960/part1/diag_of_class.png)
 
 ### 📝 Notes Explicatives
 
@@ -232,7 +232,7 @@ Toutes les entités partagent les attributs suivants, suggérant l'existence pot
 
 ### 🖼️ Diagramme
 
-![Diagrammes de séquence]([sequence_diagrams.png](https://github.com/LenyBl/holbertonschool-hbnb/blob/03308167b1bf53bcc9689a9048cae1803b689636/part1/sequence_diagrams.png))
+![Diagrammes de séquence](https://github.com/LenyBl/holbertonschool-hbnb/blob/03308167b1bf53bcc9689a9048cae1803b689636/part1/sequence_diagrams.png)
 
 Les diagrammes de séquence illustrent les interactions entre les **quatre participants** du système pour les appels API principaux :
 
