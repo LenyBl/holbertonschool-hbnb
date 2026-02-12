@@ -8,8 +8,8 @@
 2. [High-Level Architecture Diagram (Package Diagram)](#2-high-level-architecture-diagram)
 3. [Class Diagram](#3-class-diagram)
 4. [Sequence Diagrams](#4-sequence-diagrams)
-5. [Conclusion](#5-conclusion)
-6. [Authors](#6-authors)
+5. [Consistency Verification](#5-consistency-verification)
+6. [Conclusion](#6-conclusion)
 
 ---
 
