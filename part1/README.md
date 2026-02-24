@@ -6,10 +6,11 @@
 
 1. [Introduction](#1-introduction)
 2. [High-Level Architecture Diagram (Package Diagram)](#2-high-level-architecture-diagram)
-3. [Class Diagram](#3-class-diagram)
-4. [Sequence Diagrams](#4-sequence-diagrams)
-5. [Consistency Verification](#5-consistency-verification)
-6. [Conclusion](#6-conclusion)
+3. [Business Logic Layer](#3-business-logic-layer)
+4. [Class Diagram](#4-class-diagram)
+5. [Sequence Diagrams](#5-sequence-diagrams)
+6. [Consistency Verification](#6-consistency-verification)
+7. [Conclusion](#7-conclusion)
 
 ---
 
@@ -94,7 +95,215 @@ Client (HTTP Request)
 
 ---
 
-## 3. Class Diagram
+## 3. Business Logic Layer
+
+The **Business Logic Layer** is the heart of the HBnB application. It contains all the domain entities, enforces business rules, and orchestrates the interactions between the Presentation and Persistence layers. Each entity inherits from `BaseModel`, which provides common attributes (`id`, `created_at`, `updated_at`) and utility methods (`save()`, `update()`).
+
+---
+
+### 3.1 — `BaseModel`
+
+**File:** `base_model.py`
+
+```
+┌─────────────────────────────────────┐
+│             BaseModel               │
+├─────────────────────────────────────┤
+│ + id         : str (UUID)           │
+│ + created_at : datetime             │
+│ + updated_at : datetime             │
+├─────────────────────────────────────┤
+│ + save()   : void                   │
+│ + update(data: dict) : void         │
+└─────────────────────────────────────┘
+```
+
+**Responsibilities:**
+- Generates a **unique UUID** for every entity upon instantiation.
+- Automatically records `created_at` and `updated_at` timestamps.
+- `save()` refreshes the `updated_at` timestamp whenever the object is modified.
+- `update(data)` applies a dictionary of attribute changes and calls `save()` automatically.
+
+All four domain entities (`User`, `Place`, `Review`, `Amenity`) extend `BaseModel` and therefore inherit these cross-cutting concerns.
+
+---
+
+### 3.2 — `User`
+
+**File:** `user.py`
+
+```
+┌────────────────────────────────────────┐
+│                 User                   │
+│           (extends BaseModel)          │
+├────────────────────────────────────────┤
+│ + first_name : str  (max 50 chars)     │
+│ + last_name  : str  (max 50 chars)     │
+│ + email      : str  (valid format)     │
+│ + is_admin   : bool (default: False)   │
+├────────────────────────────────────────┤
+│ (inherited) id, created_at, updated_at │
+│ (inherited) save(), update()           │
+└────────────────────────────────────────┘
+```
+
+**Responsibilities:**
+- Represents a **registered user** of the platform.
+- Validates `first_name` and `last_name`: must be non-empty strings of at most 50 characters.
+- Validates `email`: must be a non-empty string containing `@` and `.` (basic format check).
+- `is_admin` is a boolean flag distinguishing standard users from administrators; defaults to `False`.
+- All attributes are protected via **Python properties** with explicit setters that raise `ValueError` on invalid input.
+
+**Business Rules enforced:**
+| Attribute | Rule |
+|---|---|
+| `first_name` / `last_name` | Non-empty string, ≤ 50 characters |
+| `email` | Must contain `@` and `.`; non-empty string |
+| `is_admin` | Must be a boolean value |
+
+---
+
+### 3.3 — `Place`
+
+**File:** `place.py`
+
+```
+┌────────────────────────────────────────────┐
+│                   Place                    │
+│             (extends BaseModel)            │
+├────────────────────────────────────────────┤
+│ + title       : str   (max 100 chars)      │
+│ + description : str                        │
+│ + price       : float (≥ 0)               │
+│ + latitude    : float (−90 to 90)         │
+│ + longitude   : float (−180 to 180)       │
+│ + owner       : User                       │
+│ + reviews     : List[Review]               │
+│ + amenities   : List[Amenity]              │
+├────────────────────────────────────────────┤
+│ + add_review(review: Review)  : void       │
+│ + add_amenity(amenity: Amenity) : void     │
+│ (inherited) id, created_at, updated_at    │
+│ (inherited) save(), update()              │
+└────────────────────────────────────────────┘
+```
+
+**Responsibilities:**
+- Represents an **accommodation listing** on the platform.
+- `title` is validated to be a non-empty string stripped of whitespace, with a maximum of 100 characters.
+- `description` is optional; whitespace-only values are normalized to an empty string.
+- `price` must be a non-negative number (stored as `float`).
+- `latitude` is constrained to `[−90, 90]` and `longitude` to `[−180, 180]`.
+- `owner` must be a valid `User` instance — enforcing the ownership relationship at the model level.
+- `add_review()` appends a `Review` instance to the internal `reviews` list after type validation.
+- `add_amenity()` appends an `Amenity` instance to the internal `amenities` list after type validation.
+
+**Business Rules enforced:**
+| Attribute / Method | Rule |
+|---|---|
+| `title` | Non-empty string (stripped), ≤ 100 characters |
+| `price` | Numeric (int or float), ≥ 0 |
+| `latitude` | Float between −90 and 90 |
+| `longitude` | Float between −180 and 180 |
+| `owner` | Must be a `User` instance |
+| `add_review()` | Argument must be a `Review` instance |
+| `add_amenity()` | Argument must be an `Amenity` instance |
+
+---
+
+### 3.4 — `Review`
+
+**File:** `review.py`
+
+```
+┌────────────────────────────────────────┐
+│                Review                  │
+│          (extends BaseModel)           │
+├────────────────────────────────────────┤
+│ + text   : str                         │
+│ + rating : int  (1 – 5)               │
+│ + place  : Place                       │
+│ + user   : User                        │
+├────────────────────────────────────────┤
+│ (inherited) id, created_at, updated_at │
+│ (inherited) save(), update()           │
+└────────────────────────────────────────┘
+```
+
+**Responsibilities:**
+- Represents a **review** submitted by a user about a place.
+- `text` must be a non-empty string — the actual written feedback.
+- `rating` must be an integer strictly between 1 and 5 inclusive.
+- `place` must be a valid `Place` instance, establishing the link between the review and the reviewed accommodation.
+- `user` must be a valid `User` instance, identifying the author of the review.
+- All attributes use **property setters** to enforce invariants at assignment time.
+
+**Business Rules enforced:**
+| Attribute | Rule |
+|---|---|
+| `text` | Non-empty string |
+| `rating` | Integer in the range [1, 5] |
+| `place` | Must be a `Place` instance |
+| `user` | Must be a `User` instance |
+
+---
+
+### 3.5 — `Amenity`
+
+**File:** `amenity.py`
+
+```
+┌────────────────────────────────────────┐
+│               Amenity                  │
+│          (extends BaseModel)           │
+├────────────────────────────────────────┤
+│ + name : str  (max 100 chars)          │
+├────────────────────────────────────────┤
+│ (inherited) id, created_at, updated_at │
+│ (inherited) save(), update()           │
+└────────────────────────────────────────┘
+```
+
+**Responsibilities:**
+- Represents a **feature or service** available at a place (e.g., Wi-Fi, swimming pool, parking).
+- `name` must be a non-empty string with a maximum length of 100 characters.
+- Amenities follow a **many-to-many** relationship with places: a single amenity (e.g., "Wi-Fi") can be associated with multiple places, and a place can list multiple amenities.
+- The `Place.add_amenity()` method manages this association at runtime.
+
+**Business Rules enforced:**
+| Attribute | Rule |
+|---|---|
+| `name` | Non-empty string, ≤ 100 characters |
+
+---
+
+### 3.6 — Entity Relationships Summary
+
+```
+BaseModel
+    │
+    ├── User ──────────────────────────────────────┐
+    │                                               │ owns (1 → 0..*)
+    ├── Place ◄──────────────────────────────────── ┘
+    │     │
+    │     │ has (1 → 0..*)      contains (0..* ↔ 0..*)
+    │     ├──────────────────► Review
+    │     └──────────────────► Amenity
+    │
+    ├── Review  (links Place + User)
+    └── Amenity (shared across Places)
+```
+
+| Relationship | Cardinality | Description |
+|---|---|---|
+| `User` → `Place` | 1 — 0..* | A user owns zero or more places |
+| `User` → `Review` | 1 — 0..* | A user writes zero or more reviews |
+| `Place` → `Review` | 1 — 0..* | A place receives zero or more reviews |
+| `Place` ↔ `Amenity` | 0..* — 0..* | Many-to-many: a place has multiple amenities; an amenity can belong to multiple places |
+
+---
+
+## 4. Class Diagram
 
 ### 🖼️ Diagram
 
@@ -102,7 +311,7 @@ Client (HTTP Request)
 
 ### 📝 Explanatory Notes
 
-#### 3.1 — `User` Class
+#### 4.1 — `User` Class
 
 ```
 ┌────────────────────────────────┐
@@ -131,7 +340,7 @@ Client (HTTP Request)
 - The `register()` method creates a new user with password hashing.
 - The `getPlaces()` and `getReviews()` methods allow navigation to associated entities.
 
-#### 3.2 — `Place` Class
+#### 4.2 — `Place` Class
 
 ```
 ┌──────────────────────────────────┐
@@ -161,7 +370,7 @@ Client (HTTP Request)
 - `addAmenity()` and `removeAmenity()` manage the many-to-many relationship with amenities.
 - `getReviews()` returns all reviews associated with this place.
 
-#### 3.3 — `Review` Class
+#### 4.3 — `Review` Class
 
 ```
 ┌──────────────────────────────────┐
@@ -184,7 +393,7 @@ Client (HTTP Request)
 - `rating` is an integer score (e.g., from 1 to 5).
 - `listByPlace()` retrieves all reviews for a specific place.
 
-#### 3.4 — `Amenity` Class
+#### 4.4 — `Amenity` Class
 
 ```
 ┌──────────────────────────────────┐
@@ -206,7 +415,7 @@ Client (HTTP Request)
 - Represents an **amenity/service** available at a place (WiFi, pool, parking, etc.).
 - Can be shared across multiple places (many-to-many relationship).
 
-#### 3.5 — Relationships Between Classes
+#### 4.5 — Relationships Between Classes
 
 | Relationship | Type | Cardinality | Description |
 |---|---|---|---|
@@ -215,7 +424,7 @@ Client (HTTP Request)
 | **Place → Review** | `has` | 1 — 0..* | A place receives zero or more reviews |
 | **Place → Amenity** | `contains` | 0..* — 0..* | A place contains zero or more amenities; an amenity can belong to multiple places |
 
-#### 3.6 — Common Attributes
+#### 4.6 — Common Attributes
 
 All entities share the following attributes, suggesting the potential existence of an **abstract base class**:
 - `id`: unique identifier
@@ -224,7 +433,7 @@ All entities share the following attributes, suggesting the potential existence 
 
 ---
 
-## 4. Sequence Diagrams
+## 5. Sequence Diagrams
 
 ### 🖼️ Diagram
 
@@ -241,7 +450,7 @@ The sequence diagrams illustrate the interactions between the **four participant
 
 ---
 
-### 4.1 — POST `/api/users` (User Registration)
+### 5.1 — POST `/api/users` (User Registration)
 
 ```
 Client              API                Logic              Database
@@ -268,7 +477,7 @@ Client              API                Logic              Database
 
 ---
 
-### 4.2 — POST `/api/places` (Place Creation)
+### 5.2 — POST `/api/places` (Place Creation)
 
 ```
 Client              API                Logic              Database
@@ -296,7 +505,7 @@ Client              API                Logic              Database
 
 ---
 
-### 4.3 — POST `/api/reviews` (Review Creation)
+### 5.3 — POST `/api/reviews` (Review Creation)
 
 ```
 Client              API                Logic              Database
@@ -327,7 +536,7 @@ Client              API                Logic              Database
 
 ---
 
-### 4.4 — GET `/api/places` (Retrieve List of Places)
+### 5.4 — GET `/api/places` (Retrieve List of Places)
 
 ```
 Client              API                Logic              Database
@@ -351,7 +560,7 @@ Client              API                Logic              Database
 
 ---
 
-## 5. Conclusion
+## 6. Conclusion
 
 This technical documentation presents the complete architecture of the **HBnB** project through three complementary types of UML diagrams:
 
@@ -371,11 +580,10 @@ This documentation base will serve as a **reference** for the implementation of 
 
 ---
 
-## 6. Authors
+## 7. Authors
 
 - [Blee Leny](https://github.com/LenyBl)
 - [Jourdan Auxance](https://github.com/JAuxance)
 
 *Document written as part of the HBnB project – Holberton School* &nbsp;&nbsp;
 <a href="https://www.holbertonschool.fr/" target="_blank"><img src="https://github.com/user-attachments/assets/7ec82675-15fc-4360-b5dc-eb344deeff06" width="70" align="middle" /></a>
-
