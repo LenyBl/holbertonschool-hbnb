@@ -1,28 +1,23 @@
-import unittest
-import sys
-import os
+from .base_model import BaseModel
 
+class Amenity(BaseModel):
+	def __init__(self, name):
+		"""Initialize an Amenity instance."""
+		super().__init__()
+		self.name = name
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-
-from app.models.place import Place
-from app.models.user import User
-from app.models.review import Review
-
-
-def test_place_creation():
-    owner = User(first_name="Alice", last_name="Smith", email="alice.smith@example.com")
-    place = Place(title="Cozy Apartment", description="A nice place to stay", price=100, latitude=37.7749, longitude=-122.4194, owner=owner)
-
-    # Adding a review
-    review = Review(text="Great stay!", rating=5, place=place, user=owner)
-    place.add_review(review)
-
-    assert place.title == "Cozy Apartment"
-    assert place.price == 100
-    assert len(place.reviews) == 1
-    assert place.reviews[0].text == "Great stay!"
-    print("Place creation and relationship test passed!")
-
-test_place_creation()
+	@property
+	def name(self):
+		"""Get the name of the amenity."""
+		return self._name
+	
+	@name.setter
+	def name(self, value):
+		"""Set the name of the amenity."""
+		if not isinstance(value, str):
+			raise TypeError("Name must be a string")
+		if len(value) > 100:
+			raise ValueError("Name must be 100 characters or less")
+		if not value:
+			raise ValueError("Name cannot be empty")
+		self._name = value
