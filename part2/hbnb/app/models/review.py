@@ -1,6 +1,6 @@
-from base_model import BaseModel
-from place import Place
-from user import User
+from .base_model import BaseModel
+from .place import Place
+from .user import User
 
 class Review(BaseModel):
 	"""Review class representing a review of a place."""
@@ -20,7 +20,7 @@ class Review(BaseModel):
 	def text(self, value):
 		"""Set the text of the review."""
 		if not isinstance(value, str):
-			raise ValueError("Text must be a string")
+			raise TypeError("Text must be a string")
 		if not value:
 			raise ValueError("Text cannot be empty")
 		self._text = value
@@ -34,7 +34,7 @@ class Review(BaseModel):
 	def rating(self, value):
 		"""Set the rating of the review."""
 		if not isinstance(value, int):
-			raise ValueError("Rating must be an integer")
+			raise TypeError("Rating must be an integer")
 		if value < 1 or value > 5:
 			raise ValueError("Rating must be between 1 and 5")
 		self._rating = value
@@ -48,7 +48,7 @@ class Review(BaseModel):
 	def place(self, value):
 		"""Set the place associated with the review."""
 		if not isinstance(value, Place):
-			raise ValueError("Place must be an instance of Place")
+			raise TypeError("Place must be an instance of Place")
 		self._place = value
 	
 	@property
@@ -60,5 +60,5 @@ class Review(BaseModel):
 	def user(self, value):
 		"""Set the user associated with the review."""
 		if not isinstance(value, User):
-			raise ValueError("User must be an instance of User")
+			raise TypeError("User must be an instance of User")
 		self._user = value

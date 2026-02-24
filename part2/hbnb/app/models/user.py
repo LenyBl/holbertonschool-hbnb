@@ -1,4 +1,4 @@
-from base_model import BaseModel
+from .base_model import BaseModel
 
 class User(BaseModel):
 	def __init__(self, first_name, last_name, email, is_admin=False):
@@ -18,7 +18,7 @@ class User(BaseModel):
 	def first_name(self, value):
 		"""Set the first name of the user."""
 		if not isinstance(value, str):
-			raise ValueError("First name must be a string")
+			raise TypeError("First name must be a string")
 		if len(value) > 50:
 			raise ValueError("First name must be 50 characters or less")
 		if not value:
@@ -34,7 +34,7 @@ class User(BaseModel):
 	def last_name(self, value):
 		"""Set the last name of the user."""
 		if not isinstance(value, str):
-			raise ValueError("Last name must be a string")
+			raise TypeError("Last name must be a string")
 		if len(value) > 50:
 			raise ValueError("Last name must be 50 characters or less")
 		if not value:
@@ -52,7 +52,7 @@ class User(BaseModel):
 		if "@" not in value or "." not in value:
 			raise ValueError("Email must be a valid email address")
 		if not isinstance(value, str):
-			raise ValueError("Email must be a string")
+			raise TypeError("Email must be a string")
 		if not value:
 			raise ValueError("Email cannot be empty")
 		self._email = value
@@ -66,6 +66,6 @@ class User(BaseModel):
 	def is_admin(self, value):
 		"""Set whether the user is an admin."""
 		if not isinstance(value, bool):
-			raise ValueError("is_admin must be a boolean")
+			raise TypeError("is_admin must be a boolean")
 		self._is_admin = value
 	

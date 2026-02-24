@@ -1,7 +1,7 @@
-from base_model import BaseModel
-from user import User
-from review import Review
-from amenity import Amenity
+from .base_model import BaseModel
+from .user import User
+from .review import Review
+from .amenity import Amenity
 
 class Place(BaseModel):
     def __init__(self, title, description, price, latitude, longitude, owner):
@@ -25,7 +25,7 @@ class Place(BaseModel):
     def title(self, value):
         """Set the title of the place."""
         if not isinstance(value, str):
-            raise ValueError("Title must be a string")
+            raise TypeError("Title must be a string")
         value = value.strip()
         if not value:
             raise ValueError("Title cannot be empty")
@@ -42,7 +42,7 @@ class Place(BaseModel):
     def description(self, value):
         """Set the description of the place."""
         if not isinstance(value, str):
-            raise ValueError("Description must be a string")
+            raise TypeError("Description must be a string")
         if not value.strip():
             value = ""
         self._description = value.strip()
@@ -56,7 +56,7 @@ class Place(BaseModel):
     def price(self, value):
         """Set the price of the place."""
         if not isinstance(value, (int, float)):
-            raise ValueError("Price must be a number")
+            raise TypeError("Price must be a number")
         if value < 0:
             raise ValueError("Price cannot be negative")
         self._price = float(value)
@@ -70,7 +70,7 @@ class Place(BaseModel):
     def latitude(self, value):
         """Set the latitude of the place."""
         if not isinstance(value, (int, float)):
-            raise ValueError("Latitude must be a number")
+            raise TypeError("Latitude must be a number")
         if value < -90 or value > 90:
             raise ValueError("Latitude must be between -90 and 90")
         self._latitude = float(value)
@@ -84,7 +84,7 @@ class Place(BaseModel):
     def longitude(self, value):
         """Set the longitude of the place."""
         if not isinstance(value, (int, float)):
-            raise ValueError("Longitude must be a number")
+            raise TypeError("Longitude must be a number")
         if value < -180 or value > 180:
             raise ValueError("Longitude must be between -180 and 180")
         self._longitude = float(value)
@@ -98,17 +98,17 @@ class Place(BaseModel):
     def owner(self, user):
         """Set the owner of the place."""
         if not isinstance(user, User):
-            raise ValueError("Owner must be a User instance")
+            raise TypeError("Owner must be a User instance")
         self._owner = user
 
     def add_review(self, review):
         """Add a review to the place."""
         if not isinstance(review, Review):
-            raise ValueError("Review must be a Review instance")
+            raise TypeError("Review must be a Review instance")
         self.reviews.append(review)
 
     def add_amenity(self, amenity):
         """Add an amenity to the place."""
         if not isinstance(amenity, Amenity):
-            raise ValueError("Amenity must be an Amenity instance")
+            raise TypeError("Amenity must be an Amenity instance")
         self.amenities.append(amenity)

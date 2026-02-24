@@ -1,15 +1,6 @@
-import unittest
-import sys
-import os
-
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-
 from app.models.place import Place
-from app.models.user import User
 from app.models.review import Review
-
+from app.models.user import User
 
 def test_place_creation():
     owner = User(first_name="Alice", last_name="Smith", email="alice.smith@example.com")
