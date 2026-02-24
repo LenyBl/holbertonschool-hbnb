@@ -1,5 +1,4 @@
 from .base_model import BaseModel
-from .place import Place
 from .user import User
 
 class Review(BaseModel):
@@ -47,6 +46,7 @@ class Review(BaseModel):
 	@place.setter
 	def place(self, value):
 		"""Set the place associated with the review."""
+		from .place import Place
 		if not isinstance(value, Place):
 			raise TypeError("Place must be an instance of Place")
 		self._place = value
