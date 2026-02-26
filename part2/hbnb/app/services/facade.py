@@ -73,6 +73,30 @@ class HBnBFacade:
 
     def update_place(self, place_id, place_data):
         place = self.get_place(place_id)
+        if not place:
+            return None
+
+        update_data = {}
+        for key, value in place_data.items():
+            if key == 'owner_id':
+                owner = self.get_user(value)
+                if not owner:
+                    raise ValueError("Owner with the given ID does not exist")
+                update_data['owner'] = owner
+            elif key == 'amenities':
+                pass  # handled separately below
+            else:
+                update_data[key] = value
+
+        self.place_repo.update(place_id, update_data)
+
+        if 'amenities' in place_data:
+            place.amenities = []
+            for amenity_id in place_data['amenities']:
+                amenity = self.get_amenity(amenity_id)
+                if not amenity:
+                    raise ValueError(f"Amenity with ID '{amenity_id}' does not exist")
+                place.add_amenity(amenity)
 
         return place
 

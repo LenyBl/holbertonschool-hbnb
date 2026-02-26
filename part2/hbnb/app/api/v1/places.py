@@ -88,3 +88,13 @@ class PlaceResource(Resource):
         place = facade.update_place(place_id, place_data)
         if not place:
             api.abort(404, "Place not found")
+        return {
+            'id': place.id,
+            'title': place.title,
+            'description': place.description,
+            'price': place.price,
+            'latitude': place.latitude,
+            'longitude': place.longitude,
+            'owner_id': place.owner.id,
+            'amenities': [a.to_dict() for a in place.amenities]
+        }, 200
