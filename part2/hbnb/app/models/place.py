@@ -112,3 +112,16 @@ class Place(BaseModel):
         if not isinstance(amenity, Amenity):
             raise TypeError("Amenity must be an Amenity instance")
         self.amenities.append(amenity)
+
+    def to_dict(self):
+        """Convert the Place instance to a dictionary."""
+        return {
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'price': self.price,
+            'latitude': self.latitude,
+            'longitude': self.longitude,
+            'owner_id': self.owner.id if self.owner else None,
+            'amenities': [amenity.to_dict() for amenity in self.amenities]
+        }

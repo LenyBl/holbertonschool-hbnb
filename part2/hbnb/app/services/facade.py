@@ -1,8 +1,7 @@
-from tkinter import Place
-
 from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.amenity import Amenity
+from app.models.place import Place
 
 
 class HBnBFacade:
@@ -44,7 +43,26 @@ class HBnBFacade:
         return amenity
 
     def create_place(self, place_data):
-        place = Place(**place_data)
+        owner_id = place_data.get('owner_id')
+        owner = self.get_user(owner_id)
+
+        if not owner:
+            raise ValueError("Owner with the given ID does not exist")
+
+        place = Place(
+            title=place_data['title'],
+            description=place_data.get('description', ''),
+            price=place_data['price'],
+            latitude=place_data['latitude'],
+            longitude=place_data['longitude'],
+            owner=owner
+        )
+
+        for amenity_id in place_data.get('amenities', []):
+            amenity = self.get_amenity(amenity_id)
+            if amenity:
+                place.add_amenity(amenity)
+
         self.place_repo.add(place)
         return place
 
