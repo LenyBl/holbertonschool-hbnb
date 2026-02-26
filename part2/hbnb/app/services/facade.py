@@ -76,7 +76,26 @@ class HBnBFacade:
     def update_place(self, place_id, place_data):
         place = self.get_place(place_id)
         if place:
-            self.place_repo.update(place_id, place_data)
+            if 'title' in place_data:
+                place.title = place_data['title']
+            if 'description' in place_data:
+                place.description = place_data['description']
+            if 'price' in place_data:
+                place.price = place_data['price']
+            if 'latitude' in place_data:
+                place.latitude = place_data['latitude']
+            if 'longitude' in place_data:
+                place.longitude = place_data['longitude']
+            if 'owner_id' in place_data:
+                owner = self.get_user(place_data['owner_id'])
+                if owner:
+                    place.owner = owner
+            if 'amenities' in place_data:
+                for amenity_id in place_data['amenities']:
+                    amenity = self.get_amenity(amenity_id)
+                    if amenity and amenity not in place.amenities:
+                        place.add_amenity(amenity)
+            self.place_repo.update(place_id, place)
         return place
 
     def create_review(self, review_data):
