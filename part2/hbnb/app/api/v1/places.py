@@ -75,7 +75,7 @@ class PlaceResource(Resource):
             'latitude': place.latitude,
             'longitude': place.longitude,
             'owner': place.owner.to_dict() if place.owner else None,
-            'amenities': [a.to_dict() for a in place.amenities]
+            'amenities': [amenity.to_dict() for amenity in place.amenities]
         }, 200
 
     @api.expect(place_model)
@@ -84,21 +84,7 @@ class PlaceResource(Resource):
     @api.response(400, 'Invalid input data')
     def put(self, place_id):
         """Update a place's information"""
-        try:
-            place_data = api.payload
-            updated_place = facade.update_place(place_id, place_data)
-            return {
-                'id': updated_place.id,
-                'title': updated_place.title,
-                'description': updated_place.description,
-                'price': updated_place.price,
-                'latitude': updated_place.latitude,
-                'longitude': updated_place.longitude,
-                'owner': updated_place.owner.to_dict() if updated_place.owner else None,
-                'amenities': [a.to_dict() for a in updated_place.amenities]
-            }, 200
-        except ValueError as e:
-            error_msg = str(e)
-            if 'not found' in error_msg.lower():
-                return {'error': error_msg}, 404
-            return {'error': error_msg}, 400
+        place_data = api.payload
+        place = facade.update_place(place_id, place_data)
+        if not place:
+            api.abort(404, "Place not found")

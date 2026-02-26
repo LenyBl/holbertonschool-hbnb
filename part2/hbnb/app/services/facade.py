@@ -73,23 +73,6 @@ class HBnBFacade:
 
     def update_place(self, place_id, place_data):
         place = self.get_place(place_id)
-        if not place:
-            raise ValueError("Place not found")
-
-        scalar_fields = {
-            k: v for k, v in place_data.items()
-            if k in ('title', 'description', 'price', 'latitude', 'longitude')
-        }
-        if scalar_fields:
-            self.place_repo.update(place_id, scalar_fields)
-
-        if 'amenities' in place_data:
-            place.amenities = []
-            for amenity_id in place_data['amenities']:
-                amenity = self.get_amenity(amenity_id)
-                if not amenity:
-                    raise ValueError(f"Amenity with ID '{amenity_id}' does not exist")
-                place.add_amenity(amenity)
 
         return place
 
