@@ -68,3 +68,15 @@ class User(BaseModel):
         if not isinstance(value, bool):
             raise TypeError("is_admin must be a boolean")
         self._is_admin = value
+
+    def to_dict(self):
+        """Convert the User instance to a dictionary."""
+        return {
+            'id': self.id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'is_admin': self.is_admin,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }
