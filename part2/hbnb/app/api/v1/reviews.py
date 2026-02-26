@@ -26,8 +26,8 @@ class ReviewList(Resource):
                 'id': new_review.id,
                 'text': new_review.text,
                 'rating': new_review.rating,
-                'user_id': new_review.user_id,
-                'place_id': new_review.place_id
+                'user_id': new_review.user.id,
+                'place_id': new_review.place.id
             }, 201
         except ValueError as e:
             return {'error': str(e)}, 400
@@ -40,8 +40,8 @@ class ReviewList(Resource):
             'id': review.id,
             'text': review.text,
             'rating': review.rating,
-            'user_id': review.user_id,
-            'place_id': review.place_id
+            'user_id': review.user.id,
+            'place_id': review.place.id
         } for review in reviews], 200
 
 
@@ -57,8 +57,8 @@ class ReviewResource(Resource):
                 'id': review.id,
                 'text': review.text,
                 'rating': review.rating,
-                'user_id': review.user_id,
-                'place_id': review.place_id
+                'user_id': review.user.id,
+                'place_id': review.place.id
             }, 200
         except ValueError:
             return {'error': 'Review not found'}, 404
@@ -76,13 +76,11 @@ class ReviewResource(Resource):
                 'id': updated_review.id,
                 'text': updated_review.text,
                 'rating': updated_review.rating,
-                'user_id': updated_review.user_id,
-                'place_id': updated_review.place_id
+                'user_id': updated_review.user.id,
+                'place_id': updated_review.place.id
             }, 200
         except ValueError as e:
-            return {'error': str(e)}, 400
-        except KeyError:
-            return {'error': 'Review not found'}, 404
+            return {'error': str(e)}, 404
 
     @api.response(200, 'Review deleted successfully')
     @api.response(404, 'Review not found')
@@ -91,5 +89,5 @@ class ReviewResource(Resource):
         try:
             facade.delete_review(review_id)
             return {'message': 'Review deleted successfully'}, 200
-        except KeyError:
+        except ValueError:
             return {'error': 'Review not found'}, 404

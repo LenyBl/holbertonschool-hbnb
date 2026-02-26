@@ -24,7 +24,7 @@ place_model = api.model('Place', {
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
     'owner_id': fields.String(required=True, description='ID of the owner'),
-    'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
+    'amenities': fields.List(fields.String, description="List of amenities ID's")
 })
 
 
@@ -35,9 +35,21 @@ class PlaceList(Resource):
     @api.response(400, 'Invalid input data')
     def post(self):
         """Register a new place"""
-        place_data = api.payload
-        place = facade.create_place(place_data)
-        return {'id': place.id, 'title': place.title, 'description': place.description, 'price': place.price, 'latitude': place.latitude, 'longitude': place.longitude, 'owner_id': place.owner.id}, 201
+        try:
+            place_data = api.payload
+            place = facade.create_place(place_data)
+            return {
+                'id': place.id,
+                'title': place.title,
+                'description': place.description,
+                'price': place.price,
+                'latitude': place.latitude,
+                'longitude': place.longitude,
+                'owner_id': place.owner.id,
+                'amenities': [a.to_dict() for a in place.amenities]
+            }, 201
+        except ValueError as e:
+            return {'error': str(e)}, 400
 
     @api.response(200, 'List of places retrieved successfully')
     def get(self):
@@ -72,5 +84,21 @@ class PlaceResource(Resource):
     @api.response(400, 'Invalid input data')
     def put(self, place_id):
         """Update a place's information"""
-        # Placeholder for the logic to update a place by ID
-        pass
+        try:
+            place_data = api.payload
+            updated_place = facade.update_place(place_id, place_data)
+            return {
+                'id': updated_place.id,
+                'title': updated_place.title,
+                'description': updated_place.description,
+                'price': updated_place.price,
+                'latitude': updated_place.latitude,
+                'longitude': updated_place.longitude,
+                'owner': updated_place.owner.to_dict() if updated_place.owner else None,
+                'amenities': [a.to_dict() for a in updated_place.amenities]
+            }, 200
+        except ValueError as e:
+            error_msg = str(e)
+            if 'not found' in error_msg.lower():
+                return {'error': error_msg}, 404
+            return {'error': error_msg}, 400
