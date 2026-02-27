@@ -245,6 +245,73 @@ except ValueError as e:
 
 ---
 
+## Testing Process
+
+The business logic layer was tested through a combination of unit tests and manual validation scripts covering both the happy path and edge cases.
+
+### Successful Cases
+
+**User creation and validation:**
+- Valid user created with correct `first_name`, `last_name`, `email`, and `is_admin` values.
+- `id`, `created_at`, and `updated_at` are automatically set on instantiation.
+- `save()` correctly refreshes `updated_at` without altering other attributes.
+- `update()` patches only existing attributes; unknown keys are ignored.
+
+**Amenity creation:**
+- Amenity with a valid name (e.g., `"WiFi"`) is created and stored correctly.
+- Maximum-length name (100 characters) is accepted without error.
+
+**Place creation and relationships:**
+- Place created with all required fields correctly stores values.
+- `add_review()` and `add_amenity()` append objects to their respective lists.
+- Multiple amenities and reviews can be attached to the same place.
+- `owner` references the exact `User` instance passed at creation.
+
+**Review creation:**
+- Review created with valid `text`, `rating` (1–5), `place`, and `user` fields.
+- Rating boundary values `1` and `5` are both accepted.
+
+---
+
+### Edge Cases Handled
+
+**Empty or whitespace-only strings:**
+- `User(first_name="")` raises `ValueError: First name cannot be empty`.
+- `User(first_name="   ")` (whitespace only) raises `ValueError` after stripping.
+- `Place(title="")` raises `ValueError: Title cannot be empty`.
+- `Review(text="")` raises `ValueError: Text cannot be empty`.
+
+**String length limits:**
+- `User(first_name="A" * 51)` raises `ValueError` — exceeds 50-character limit.
+- `Amenity(name="X" * 101)` raises `ValueError` — exceeds 100-character limit.
+- `Place(title="T" * 101)` raises `ValueError` — exceeds 100-character limit.
+
+**Invalid email format:**
+- `User(email="notanemail")` raises `ValueError` — missing `@` and `.`.
+- `User(email="missing-dot@domain")` raises `ValueError` — no `.` after `@`.
+
+**Numeric boundary violations:**
+- `Place(price=-1)` raises `ValueError: Price cannot be negative`.
+- `Place(latitude=91)` raises `ValueError` — exceeds valid range of −90 to 90.
+- `Place(latitude=-91)` raises `ValueError` — below valid range.
+- `Place(longitude=181)` raises `ValueError` — exceeds valid range of −180 to 180.
+- `Review(rating=0)` raises `ValueError` — below minimum of 1.
+- `Review(rating=6)` raises `ValueError` — above maximum of 5.
+
+**Wrong types for relational fields:**
+- Passing a string instead of a `User` instance as `place.owner` raises `TypeError`.
+- Passing a string instead of a `Place` instance as `review.place` raises `TypeError`.
+- Passing `None` as `user` in a `Review` raises `TypeError`.
+
+**Boolean validation:**
+- `User(is_admin="yes")` raises `TypeError` — `is_admin` must be a boolean.
+
+**`update()` method safety:**
+- Calling `update({"nonexistent_field": "value"})` silently ignores the unknown key, leaving the object unchanged.
+- Calling `update({})` is a no-op and does not raise an error.
+
+---
+
 ## Notes
 
 - All entities automatically receive a unique `id` (UUID4) and `created_at` / `updated_at` timestamps upon instantiation.
