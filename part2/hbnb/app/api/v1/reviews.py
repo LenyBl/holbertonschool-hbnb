@@ -21,7 +21,10 @@ class ReviewList(Resource):
         """Register a new review"""
         try:
             review_data = api.payload
-            new_review = facade.create_review(review_data)
+            try:
+                new_review = facade.create_review(review_data)
+            except ValueError as e:
+                return {'error': str(e)}, 400
             return {
                 'id': new_review.id,
                 'text': new_review.text,
