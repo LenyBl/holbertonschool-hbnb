@@ -178,5 +178,5 @@ Each test class creates a fresh application instance with isolated in-memory sto
 
 ## Authors
 
-- **Auxance** — [GitHub](https://github.com/AuxanceC)
+- **Auxance** — [GitHub](https://github.com/JAuxance)
 - **Leny** — [GitHub](https://github.com/LenyBl)
