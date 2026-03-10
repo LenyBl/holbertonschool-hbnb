@@ -7,6 +7,9 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
 
+class TestingConfig(Config):
+    TESTING = True
+    
 config = {
     'development': DevelopmentConfig,
     'default': DevelopmentConfig
