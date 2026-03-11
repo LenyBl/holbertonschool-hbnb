@@ -6,7 +6,9 @@ from app.api.v1.places import api as places_ns
 from app.api.v1.reviews import api as reviews_ns
 from app.services import facade
 from app.persistence.repository import InMemoryRepository
+from flask_bcrypt import Bcrypt
 
+bcrypt = Bcrypt()
 
 def create_app(config_class="config.DevelopmentConfig"):
     app = Flask(__name__)
@@ -16,6 +18,7 @@ def create_app(config_class="config.DevelopmentConfig"):
     facade.place_repo = InMemoryRepository()
     facade.review_repo = InMemoryRepository()
     facade.amenity_repo = InMemoryRepository()
+    bcrypt.init_app(app)
 
     @app.route('/')
     def index():

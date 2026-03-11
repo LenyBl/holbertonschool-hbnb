@@ -1,12 +1,15 @@
+import bcrypt
+
 from .base_model import BaseModel
 
 class User(BaseModel):
-    def __init__(self, first_name, last_name, email, is_admin=False):
+    def __init__(self, first_name, last_name, email, password, is_admin=False):
         """Initialize a User instance."""
         super().__init__()
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
+        self.password = password
         self.is_admin = is_admin
 
     @property
@@ -80,3 +83,11 @@ class User(BaseModel):
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }
+
+    def hash_password(self, password):
+        """Hash the user's password."""
+        self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+    def verify_password(self, password):
+        """Verify the user's password."""
+        return bcrypt.checkpw(password.encode('utf-8'), self.password.encode('utf-8'))
