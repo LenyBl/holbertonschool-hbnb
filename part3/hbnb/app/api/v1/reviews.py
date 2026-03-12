@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 api = Namespace('reviews', description='Review operations')
 
@@ -86,13 +86,21 @@ class ReviewResource(Resource):
     @jwt_required()
     def put(self, review_id):
         """Update a review's information"""
-        current_user = get_jwt_identity()
+        current_user_id = get_jwt_identity()
+        current_user = get_jwt()
+        
+        # Get default values for admin flag
+        is_admin = current_user.get('is_admin', False)
+        
         try:
             existing_review = facade.get_review(review_id)
         except ValueError:
             return {'error': 'Review not found'}, 404
-        if existing_review.user.id != current_user:
+        
+        # Check ownership: allow if admin OR if user is the author
+        if not is_admin and existing_review.user_id != current_user_id:
             return {'error': 'Unauthorized action'}, 403
+        
         review_data = api.payload
         try:
             updated_review = facade.update_review(review_id, review_data)
@@ -108,13 +116,25 @@ class ReviewResource(Resource):
 
     @api.response(200, 'Review deleted successfully')
     @api.response(404, 'Review not found')
+    @api.response(403, 'Unauthorized action')
     @jwt_required()
     def delete(self, review_id):
-        current_user = get_jwt_identity()  # Get the current user's ID from the JWT token
         """Delete a review"""
-        review = facade.get_review(review_id) # Get the review to check ownership
-        if review.user.id != current_user:
-            return {'error': 'Action unauthorized'}, 403
+        current_user_id = get_jwt_identity()
+        current_user = get_jwt()
+        
+        # Get default values for admin flag
+        is_admin = current_user.get('is_admin', False)
+        
+        try:
+            review = facade.get_review(review_id)  # Get the review to check ownership
+        except ValueError:
+            return {'error': 'Review not found'}, 404
+        
+        # Check ownership: allow if admin OR if user is the author
+        if not is_admin and review.user_id != current_user_id:
+            return {'error': 'Unauthorized action'}, 403
+        
         try:
             facade.delete_review(review_id)
             return {'message': 'Review deleted successfully'}, 200
