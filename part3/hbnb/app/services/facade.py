@@ -16,6 +16,25 @@ class HBnBFacade:
         self.user_repo.add(user)
         return user
 
+    def ensure_admin_user(self, email='admin@example.com', password='admin123'):
+        """Ensure a default admin user exists in the database.
+
+        - If no user with the given email exists, create one with is_admin=True.
+        - If it exists, just return it (without changing its password).
+        """
+        existing_admin = self.get_user_by_email(email)
+        if existing_admin:
+            return existing_admin
+
+        admin_data = {
+            'first_name': 'Admin',
+            'last_name': 'User',
+            'email': email,
+            'password': password,
+            'is_admin': True,
+        }
+        return self.create_user(admin_data)
+
     def get_user(self, user_id):
         return self.user_repo.get(user_id)
 
