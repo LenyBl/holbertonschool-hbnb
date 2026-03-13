@@ -5,8 +5,8 @@ from app.services import facade
 app = create_app()
 
 # Delay admin bootstrap until SQLAlchemy model mapping exists.
-if hasattr(User, 'query'):
-    with app.app_context():
+with app.app_context():
+    if hasattr(User, 'query'):
         existing_admin = facade.get_user_by_email('admin@example.com')
         if not existing_admin:
             admin_data = {
@@ -18,6 +18,7 @@ if hasattr(User, 'query'):
             admin = facade.create_user(admin_data)
             admin.is_admin = True
             print(f"Admin user initialized: {admin.email}")
+            print(f"Admin user created with id: {admin.id}")
 
 if __name__ == '__main__':
     app.run(debug=True)

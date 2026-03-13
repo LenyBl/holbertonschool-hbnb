@@ -1,8 +1,19 @@
 import bcrypt
-
+import uuid
+from app.extensions import db
 from .base_model import BaseModel
+from sqlalchemy.orm import validates
 
 class User(BaseModel):
+    _tablename__ = 'users'
+
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(128), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+
+
     def __init__(self, first_name, last_name, email, password, is_admin=False):
         """Initialize a User instance."""
         super().__init__()
@@ -12,12 +23,13 @@ class User(BaseModel):
         self.password = password
         self.is_admin = is_admin
 
+
     @property
     def first_name(self):
         """Get the first name of the user."""
         return self._first_name
     
-    @first_name.setter
+    @validates('first_name')
     def first_name(self, value):
         """Set the first name of the user."""
         if not isinstance(value, str):
@@ -33,7 +45,7 @@ class User(BaseModel):
         """Get the last name of the user."""
         return self._last_name
 	
-    @last_name.setter
+    @validates('last_name')
     def last_name(self, value):
         """Set the last name of the user."""
         if not isinstance(value, str):
@@ -49,7 +61,7 @@ class User(BaseModel):
         """Get the email of the user."""
         return self._email
 	
-    @email.setter
+    @validates('email')
     def email(self, value):
         """Set the email of the user."""
         if "@" not in value or "." not in value:
@@ -65,7 +77,7 @@ class User(BaseModel):
         """Get whether the user is an admin."""
         return self._is_admin
 	
-    @is_admin.setter
+    @validates('is_admin')
     def is_admin(self, value):
         """Set whether the user is an admin."""
         if not isinstance(value, bool):
