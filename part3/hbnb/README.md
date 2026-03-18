@@ -1,319 +1,284 @@
-# HBnB - Business Logic Layer
+# HBnB - Holberton BnB Application
 
 ## Overview
 
-The Business Logic layer forms the core of the HBnB application. It defines the main entities (models) and enforces all validation rules and relationships between them. This layer is built on top of a shared `BaseModel` that provides common attributes and behaviors.
+HBnB is a full-stack vacation rental application built with Flask. It provides a RESTful API for managing users, places, reviews, and amenities with JWT authentication and SQLAlchemy ORM.
 
 ---
 
-## Architecture
+## Database Schema
+
+![Database ER Diagram](docs/HBnB%20User%20and%20Place%20Review-2026-03-18-093437.png)
+
+### Tables
+
+| Table | Description |
+|-------|-------------|
+| `users` | Registered users (owners and reviewers) |
+| `places` | Properties listed on the platform |
+| `reviews` | User reviews for places |
+| `amenities` | Features available at places (WiFi, Pool, etc.) |
+| `place_amenity` | Many-to-many relationship between places and amenities |
+
+### Relationships
+
+- **User (1) → (N) Place**: A user can own multiple places
+- **User (1) → (N) Review**: A user can write multiple reviews
+- **Place (1) → (N) Review**: A place can have multiple reviews
+- **Place (N) ↔ (N) Amenity**: Many-to-many via `place_amenity` table
+
+---
+
+## Project Structure
 
 ```
-base_model.py   ← Shared base class (id, timestamps, save/update)
-user.py         ← User entity
-amenity.py      ← Amenity entity
-place.py        ← Place entity (owns reviews & amenities)
-review.py       ← Review entity (linked to Place & User)
+hbnb/
+├── app/
+│   ├── api/v1/           # REST API endpoints
+│   │   ├── auth.py       # Authentication (login, JWT)
+│   │   ├── users.py      # User CRUD operations
+│   │   ├── places.py     # Place CRUD operations
+│   │   ├── reviews.py    # Review CRUD operations
+│   │   └── amenities.py  # Amenity CRUD operations
+│   ├── models/           # SQLAlchemy models
+│   │   ├── base_model.py # Base class (id, timestamps)
+│   │   ├── user.py
+│   │   ├── place.py
+│   │   ├── review.py
+│   │   └── amenity.py
+│   ├── persistence/      # Repository pattern
+│   │   ├── repository.py # Base repository
+│   │   ├── user_repository.py
+│   │   ├── place_repository.py
+│   │   ├── review_repository.py
+│   │   └── amenity_repository.py
+│   └── services/
+│       └── facade.py     # Business logic layer
+├── sql/
+│   ├── schema.sql        # MySQL schema
+│   ├── schema_sqlite.sql # SQLite schema
+│   └── seed.sql          # Initial data
+├── docs/
+│   └── *.png             # ER diagrams
+├── config.py
+├── run.py
+└── requirements.txt
 ```
 
 ---
 
-## Entities & Responsibilities
+## Installation
 
-### BaseModel (`base_model.py`)
+```bash
+# Clone the repository
+git clone <repository-url>
+cd part3/hbnb
 
-The foundation of all entities. Every model inherits from `BaseModel`.
+# Install dependencies
+pip install -r requirements.txt
 
-**Attributes:**
-| Attribute    | Type       | Description                          |
-|--------------|------------|--------------------------------------|
-| `id`         | `str`      | Unique UUID generated at creation    |
-| `created_at` | `datetime` | Timestamp of creation                |
-| `updated_at` | `datetime` | Timestamp of last update             |
-
-**Methods:**
-- `save()` — Updates the `updated_at` timestamp.
-- `update(data: dict)` — Updates attributes from a dictionary and calls `save()`.
-
----
-
-### User (`user.py`)
-
-Represents a registered user of the platform. Users can own places and write reviews.
-
-**Attributes:**
-| Attribute    | Type   | Constraints                              |
-|--------------|--------|------------------------------------------|
-| `first_name` | `str`  | Required, max 50 characters              |
-| `last_name`  | `str`  | Required, max 50 characters              |
-| `email`      | `str`  | Required, must contain `@` and `.`       |
-| `is_admin`   | `bool` | Default: `False`                         |
-
-**Validation Rules:**
-- Names must be non-empty strings of at most 50 characters.
-- Email must be a valid format (contains `@` and `.`).
-- `is_admin` must be a boolean.
-
----
-
-### Amenity (`amenity.py`)
-
-Represents a feature or facility available at a place (e.g., WiFi, Pool).
-
-**Attributes:**
-| Attribute | Type  | Constraints                        |
-|-----------|-------|------------------------------------|
-| `name`    | `str` | Required, max 100 characters       |
-
-**Validation Rules:**
-- Name must be a non-empty string of at most 100 characters.
-
----
-
-### Place (`place.py`)
-
-Represents a property or location listed on the platform. A place is owned by a `User` and can have associated `Review` and `Amenity` objects.
-
-**Attributes:**
-| Attribute     | Type    | Constraints                                  |
-|---------------|---------|----------------------------------------------|
-| `title`       | `str`   | Required, max 100 characters                 |
-| `description` | `str`   | Optional, defaults to empty string           |
-| `price`       | `float` | Must be a non-negative number                |
-| `latitude`    | `float` | Between -90 and 90                           |
-| `longitude`   | `float` | Between -180 and 180                         |
-| `owner`       | `User`  | Must be a valid `User` instance              |
-| `reviews`     | `list`  | Auto-initialized, stores `Review` objects    |
-| `amenities`   | `list`  | Auto-initialized, stores `Amenity` objects   |
-
-**Methods:**
-- `add_review(review: Review)` — Appends a `Review` to the place's review list.
-- `add_amenity(amenity: Amenity)` — Appends an `Amenity` to the place's amenity list.
-
-**Validation Rules:**
-- `title` must be a non-empty string, stripped of whitespace.
-- `price` must be numeric and non-negative.
-- `latitude` must be between -90 and 90.
-- `longitude` must be between -180 and 180.
-- `owner` must be a `User` instance.
-
----
-
-### Review (`review.py`)
-
-Represents a user's review of a place, including a text comment and a numeric rating.
-
-**Attributes:**
-| Attribute | Type    | Constraints                              |
-|-----------|---------|------------------------------------------|
-| `text`    | `str`   | Required, non-empty                      |
-| `rating`  | `int`   | Integer between 1 and 5 (inclusive)      |
-| `place`   | `Place` | Must be a valid `Place` instance         |
-| `user`    | `User`  | Must be a valid `User` instance          |
-
-**Validation Rules:**
-- `text` must be a non-empty string.
-- `rating` must be an integer between 1 and 5.
-- `place` and `user` must be instances of `Place` and `User` respectively.
-
----
-
-## Relationships Between Entities
-
-```
-User ──────────────────────────── owns ──► Place
-                                             │
-                              has many ──► Review  (written by User)
-                              has many ──► Amenity
+# Run the application
+python run.py
 ```
 
-- A **User** can own multiple **Places**.
-- A **Place** can have multiple **Reviews** and **Amenities**.
-- A **Review** is associated with exactly one **Place** and one **User**.
+The API will be available at `http://localhost:5000/api/v1/`
+
+---
+
+## API Endpoints
+
+### Authentication
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/v1/auth/login` | Get JWT token | No |
+
+### Users
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/v1/users/` | Create user | Admin |
+| GET | `/api/v1/users/<id>` | Get user | No |
+| PUT | `/api/v1/users/<id>` | Update user | Admin |
+
+### Places
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/v1/places/` | Create place | JWT (auto owner_id) |
+| GET | `/api/v1/places/` | List all places | No |
+| GET | `/api/v1/places/<id>` | Get place details | No |
+| PUT | `/api/v1/places/<id>` | Update place | Owner/Admin |
+
+### Reviews
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/v1/reviews/` | Create review | JWT (auto user_id) |
+| GET | `/api/v1/reviews/` | List all reviews | No |
+| GET | `/api/v1/reviews/<id>` | Get review | No |
+| PUT | `/api/v1/reviews/<id>` | Update review | Author/Admin |
+| DELETE | `/api/v1/reviews/<id>` | Delete review | Author/Admin |
+
+### Amenities
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/v1/amenities/` | Create amenity | Admin |
+| GET | `/api/v1/amenities/` | List all amenities | No |
+| GET | `/api/v1/amenities/<id>` | Get amenity | No |
+| PUT | `/api/v1/amenities/<id>` | Update amenity | Admin |
 
 ---
 
 ## Usage Examples
 
-### Creating a User
+### Login
 
-```python
-from models.user import User
+```bash
+curl -X POST http://localhost:5000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "admin@hbnb.io", "password": "admin1234"}'
+```
 
-user = User(
-    first_name="Alice",
-    last_name="Dupont",
-    email="alice@example.com",
-    is_admin=False
-)
-print(user.id)          # e.g. "a1b2c3d4-..."
-print(user.first_name)  # "Alice"
+### Create a Place
+
+```bash
+curl -X POST http://localhost:5000/api/v1/places/ \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{
+    "title": "Cozy Studio in Paris",
+    "description": "Near the Eiffel Tower",
+    "price": 89.99,
+    "latitude": 48.8584,
+    "longitude": 2.2945,
+    "amenities": ["<amenity-id-1>", "<amenity-id-2>"]
+  }'
+```
+
+### Create a Review
+
+```bash
+curl -X POST http://localhost:5000/api/v1/reviews/ \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{
+    "text": "Amazing place, highly recommend!",
+    "rating": 5,
+    "place_id": "<place-id>"
+  }'
 ```
 
 ---
 
-### Creating an Amenity
+## Database Setup
 
-```python
-from models.amenity import Amenity
+### MySQL
 
-wifi = Amenity(name="WiFi")
-pool = Amenity(name="Swimming Pool")
-print(wifi.name)  # "WiFi"
+```bash
+mysql -u user -p database < sql/schema.sql
+mysql -u user -p database < sql/seed.sql
 ```
 
----
+### SQLite (Development)
 
-### Creating a Place
-
-```python
-from models.place import Place
-
-place = Place(
-    title="Cozy Studio in Paris",
-    description="A lovely studio near the Eiffel Tower.",
-    price=89.99,
-    latitude=48.8584,
-    longitude=2.2945,
-    owner=user
-)
-print(place.title)   # "Cozy Studio in Paris"
-print(place.price)   # 89.99
-print(place.owner)   # <User object>
+```bash
+sqlite3 instance/development.db < sql/schema_sqlite.sql
 ```
 
----
+### Initial Data
 
-### Adding Amenities to a Place
-
-```python
-place.add_amenity(wifi)
-place.add_amenity(pool)
-print(len(place.amenities))  # 2
-```
+- **Admin User**: `admin@hbnb.io` / `admin1234`
+- **Amenities**: WiFi, Swimming Pool, Air Conditioning
 
 ---
 
-### Creating a Review
+## Models
 
-```python
-from models.review import Review
+### BaseModel
 
-review = Review(
-    text="Absolutely wonderful stay, highly recommend!",
-    rating=5,
-    place=place,
-    user=user
-)
-place.add_review(review)
-print(review.rating)        # 5
-print(len(place.reviews))   # 1
-```
+All entities inherit from `BaseModel`:
 
----
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `id` | CHAR(36) | UUID primary key |
+| `created_at` | TIMESTAMP | Creation timestamp |
+| `updated_at` | TIMESTAMP | Last update timestamp |
 
-### Updating an Entity
+### User
 
-```python
-# Using the update() method from BaseModel
-place.update({"title": "Charming Studio in Paris", "price": 95.0})
-print(place.title)  # "Charming Studio in Paris"
-print(place.price)  # 95.0
-# updated_at is automatically refreshed
-```
+| Attribute | Type | Constraints |
+|-----------|------|-------------|
+| `first_name` | VARCHAR(255) | Required |
+| `last_name` | VARCHAR(255) | Required |
+| `email` | VARCHAR(255) | Required, Unique |
+| `password` | VARCHAR(255) | Bcrypt hashed |
+| `is_admin` | BOOLEAN | Default: FALSE |
 
----
+### Place
 
-### Handling Validation Errors
+| Attribute | Type | Constraints |
+|-----------|------|-------------|
+| `title` | VARCHAR(255) | Required |
+| `description` | TEXT | Optional |
+| `price` | DECIMAL(10,2) | Required, >= 0 |
+| `latitude` | FLOAT | -90 to 90 |
+| `longitude` | FLOAT | -180 to 180 |
+| `owner_id` | CHAR(36) | FK → users.id |
 
-```python
-try:
-    bad_user = User(first_name="", last_name="Smith", email="smith@example.com")
-except ValueError as e:
-    print(e)  # "First name cannot be empty"
+### Review
 
-try:
-    bad_place = Place(title="Test", description="", price=-10, latitude=0, longitude=0, owner=user)
-except ValueError as e:
-    print(e)  # "Price cannot be negative"
+| Attribute | Type | Constraints |
+|-----------|------|-------------|
+| `text` | TEXT | Required |
+| `rating` | INT | 1-5 |
+| `user_id` | CHAR(36) | FK → users.id |
+| `place_id` | CHAR(36) | FK → places.id |
 
-try:
-    bad_review = Review(text="Nice", rating=6, place=place, user=user)
-except ValueError as e:
-    print(e)  # "Rating must be between 1 and 5"
-```
+**Constraint**: UNIQUE(user_id, place_id) - One review per user per place
 
----
+### Amenity
 
-## Testing Process
-
-The business logic layer was tested through a combination of unit tests and manual validation scripts covering both the happy path and edge cases.
-
-### Successful Cases
-
-**User creation and validation:**
-- Valid user created with correct `first_name`, `last_name`, `email`, and `is_admin` values.
-- `id`, `created_at`, and `updated_at` are automatically set on instantiation.
-- `save()` correctly refreshes `updated_at` without altering other attributes.
-- `update()` patches only existing attributes; unknown keys are ignored.
-
-**Amenity creation:**
-- Amenity with a valid name (e.g., `"WiFi"`) is created and stored correctly.
-- Maximum-length name (100 characters) is accepted without error.
-
-**Place creation and relationships:**
-- Place created with all required fields correctly stores values.
-- `add_review()` and `add_amenity()` append objects to their respective lists.
-- Multiple amenities and reviews can be attached to the same place.
-- `owner` references the exact `User` instance passed at creation.
-
-**Review creation:**
-- Review created with valid `text`, `rating` (1–5), `place`, and `user` fields.
-- Rating boundary values `1` and `5` are both accepted.
+| Attribute | Type | Constraints |
+|-----------|------|-------------|
+| `name` | VARCHAR(255) | Required, Unique |
 
 ---
 
-### Edge Cases Handled
+## Repository Methods
 
-**Empty or whitespace-only strings:**
-- `User(first_name="")` raises `ValueError: First name cannot be empty`.
-- `User(first_name="   ")` (whitespace only) raises `ValueError` after stripping.
-- `Place(title="")` raises `ValueError: Title cannot be empty`.
-- `Review(text="")` raises `ValueError: Text cannot be empty`.
+### UserRepository
+- `get_user_by_email(email)`
+- `get_all_admins()`
 
-**String length limits:**
-- `User(first_name="A" * 51)` raises `ValueError` — exceeds 50-character limit.
-- `Amenity(name="X" * 101)` raises `ValueError` — exceeds 100-character limit.
-- `Place(title="T" * 101)` raises `ValueError` — exceeds 100-character limit.
+### PlaceRepository
+- `get_places_by_owner_id(owner_id)`
+- `get_places_by_price_range(min_price, max_price)`
+- `get_places_by_location(latitude, longitude, radius)`
 
-**Invalid email format:**
-- `User(email="notanemail")` raises `ValueError` — missing `@` and `.`.
-- `User(email="missing-dot@domain")` raises `ValueError` — no `.` after `@`.
+### ReviewRepository
+- `get_reviews_by_place_id(place_id)`
+- `get_reviews_by_user_id(user_id)`
 
-**Numeric boundary violations:**
-- `Place(price=-1)` raises `ValueError: Price cannot be negative`.
-- `Place(latitude=91)` raises `ValueError` — exceeds valid range of −90 to 90.
-- `Place(latitude=-91)` raises `ValueError` — below valid range.
-- `Place(longitude=181)` raises `ValueError` — exceeds valid range of −180 to 180.
-- `Review(rating=0)` raises `ValueError` — below minimum of 1.
-- `Review(rating=6)` raises `ValueError` — above maximum of 5.
-
-**Wrong types for relational fields:**
-- Passing a string instead of a `User` instance as `place.owner` raises `TypeError`.
-- Passing a string instead of a `Place` instance as `review.place` raises `TypeError`.
-- Passing `None` as `user` in a `Review` raises `TypeError`.
-
-**Boolean validation:**
-- `User(is_admin="yes")` raises `TypeError` — `is_admin` must be a boolean.
-
-**`update()` method safety:**
-- Calling `update({"nonexistent_field": "value"})` silently ignores the unknown key, leaving the object unchanged.
-- Calling `update({})` is a no-op and does not raise an error.
+### AmenityRepository
+- `get_amenity_by_name(name)`
+- `get_amenities_by_place_id(place_id)`
 
 ---
 
-## Notes
+## Validation Rules
 
-- All entities automatically receive a unique `id` (UUID4) and `created_at` / `updated_at` timestamps upon instantiation.
-- All attribute setters perform strict type and value validation, raising `TypeError` or `ValueError` with descriptive messages on invalid input.
-- The `update()` method only modifies attributes that already exist on the object, preventing arbitrary attribute injection.
+- **User**: Names max 50 chars, valid email format
+- **Place**: Price >= 0, latitude -90/90, longitude -180/180
+- **Review**: Rating 1-5, cannot review own place, one review per place
+- **Amenity**: Name max 100 chars
+
+---
+
+## Technologies
+
+- **Backend**: Flask, Flask-RESTX
+- **Database**: SQLAlchemy ORM (SQLite/MySQL)
+- **Authentication**: Flask-JWT-Extended
+- **Password Hashing**: Flask-Bcrypt
