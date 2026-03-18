@@ -1,17 +1,21 @@
 import bcrypt
 from app.extensions import db
 from .base_model import BaseModel
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import validates, relationship
+from sqlalchemy import Column, String, Boolean
 
 
 class User(BaseModel):
     __tablename__ = 'users'
 
-    first_name = db.Column(db.String(50), nullable=False)
-    last_name = db.Column(db.String(50), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(128), nullable=False)
-    is_admin = db.Column(db.Boolean, default=False)
+    first_name = Column(String(50), nullable=False)
+    last_name = Column(String(50), nullable=False)
+    email = Column(String(120), unique=True, nullable=False)
+    password = Column(String(128), nullable=False)
+    is_admin = Column(Boolean, default=False)
+
+    places = relationship('Place', back_populates='owner', cascade='all, delete-orphan')
+    reviews = relationship('Review', back_populates='user', cascade='all, delete-orphan')
 
     def __init__(self, first_name, last_name, email, password, is_admin=False):
         """Initialize a User instance."""

@@ -24,7 +24,6 @@ place_model = api.model('Place', {
     'price': fields.Float(required=True, description='Price per night'),
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
-    'owner_id': fields.String(required=True, description='ID of the owner'),
     'amenities': fields.List(fields.String, description="List of amenities ID's")
 })
 
@@ -40,8 +39,8 @@ class PlaceList(Resource):
         current_user = get_jwt_identity()  # Get the current user's ID from the JWT token
         try:
             place_data = api.payload
-            if place_data['owner_id'] != current_user:
-                return {'error': 'You can only create places for yourself'}, 403
+            # Set owner_id from JWT token automatically
+            place_data['owner_id'] = current_user
             place = facade.create_place(place_data)
             return {
                 'id': place.id,

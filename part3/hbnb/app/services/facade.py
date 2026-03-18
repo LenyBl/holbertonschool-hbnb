@@ -118,17 +118,18 @@ class HBnBFacade:
             else:
                 update_data[key] = value
 
-        self.place_repo.update(place_id, update_data)
-
+        # Handle amenities update - clear and re-add
         if 'amenities' in place_data:
-            place.amenities = []
+            new_amenities = []
             for amenity_id in place_data['amenities']:
                 amenity = self.get_amenity(amenity_id)
                 if not amenity:
                     raise ValueError(f"Amenity with ID '{amenity_id}' does not exist")
-                place.add_amenity(amenity)
+                new_amenities.append(amenity)
+            update_data['amenities'] = new_amenities
 
-        return place
+        self.place_repo.update(place_id, update_data)
+        return self.get_place(place_id)
 
     def create_review(self, review_data):
         user = self.get_user(review_data['user_id'])

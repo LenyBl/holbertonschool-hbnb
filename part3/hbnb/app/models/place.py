@@ -1,5 +1,7 @@
 from .base_model import BaseModel
 from sqlalchemy.orm import validates
+from sqlalchemy import Column, String, ForeignKey, Float
+from sqlalchemy.orm import relationship, synonym
 from app.extensions import db
 
 place_amenity = db.Table('place_amenity',
@@ -10,16 +12,18 @@ place_amenity = db.Table('place_amenity',
 class Place(BaseModel):
     __tablename__ = 'places'
 
-    title = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text)
-    price = db.Column(db.Float, nullable=False)
-    latitude = db.Column(db.Float, nullable=False)
-    longitude = db.Column(db.Float, nullable=False)
-    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+    title = Column(String(100), nullable=False)
+    description = Column(String(500), nullable=True)
+    price = Column(Float, nullable=False)
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    user_id = Column(String(36), ForeignKey('users.id'), nullable=False)
+    # Keep owner_id as an alias to preserve existing API and service compatibility.
+    owner_id = synonym('user_id')
 
-    owner = db.relationship('User', backref='places')
-    reviews = db.relationship('Review', backref='place', lazy=True)
-    amenities = db.relationship('Amenity', secondary=place_amenity, backref='places')
+    owner = relationship('User', back_populates='places')
+    reviews = relationship('Review', back_populates='place', cascade='all, delete-orphan')
+    amenities = relationship('Amenity', secondary=place_amenity, back_populates='places')
 
     def __init__(self, title, description, price, latitude, longitude, owner):
         """Initialize a Place instance."""
