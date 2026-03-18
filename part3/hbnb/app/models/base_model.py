@@ -1,14 +1,15 @@
 import uuid
 from datetime import datetime
 from app.extensions import db
+from sqlalchemy import Column, String, DateTime
 
 
 class BaseModel(db.Model):
     __abstract__ = True
 
-    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    created_at = Column(DateTime, default=datetime.now)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     def __init__(self):
         self.id = str(uuid.uuid4())

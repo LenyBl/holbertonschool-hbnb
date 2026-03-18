@@ -1,11 +1,12 @@
 from .base_model import BaseModel
 from app.extensions import db
 from sqlalchemy.orm import validates, relationship
+from sqlalchemy import Column, String
 
 class Amenity(BaseModel):
 	__tablename__ = 'amenities'
 
-	name = db.Column(db.String(100), nullable=False)
+	name = Column(String(100), nullable=False)
 	places = relationship('Place', secondary='place_amenity', back_populates='amenities')
 
 	def __init__(self, name):
