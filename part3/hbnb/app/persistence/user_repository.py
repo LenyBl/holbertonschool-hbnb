@@ -9,3 +9,7 @@ class UserRepository(SQLAlchemyRepository):
     def get_user_by_email(self, email):
         """Get a user by their email."""
         return self.model.query.filter_by(email=email).first()
+
+    def get_all_admins(self):
+        """Get all admin users."""
+        return self.model.query.filter_by(is_admin=True).all()
