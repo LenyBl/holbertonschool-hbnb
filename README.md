@@ -155,9 +155,10 @@ python -m pytest
 
 ---
 
-## Author
+## Authors
 
-Holberton School Project
+- **Leny Blee** - [GitHub](https://github.com/LenyBl)
+- **Auxance Jourdan** - [GitHub](https://github.com/JAuxance)
 
 ---
 
