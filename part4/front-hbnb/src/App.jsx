@@ -1,12 +1,44 @@
-import './App.css'
-import { BrowserRouter as Routes, Route } from 'react-router-dom'
+import './App.css';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import { AuthProvider } from './contexts/AuthContext';
+import { ToastProvider } from './contexts/ToastContext';
+import Navbar from './components/Navbar';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import PlacesPage from './pages/PlacesPage';
+import PlaceDetailPage from './pages/PlaceDetailPage';
+import CreateEditPlacePage from './pages/CreateEditPlacePage';
+import AdminPage from './pages/AdminPage';
+
+function AppRoutes() {
+  const location = useLocation();
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/places" element={<PlacesPage />} />
+        <Route path="/places/new" element={<CreateEditPlacePage />} />
+        <Route path="/places/:id" element={<PlaceDetailPage />} />
+        <Route path="/places/:id/edit" element={<CreateEditPlacePage />} />
+        <Route path="/admin" element={<AdminPage />} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
 
 export default function App() {
   return (
-    <div className="App">
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
-    </div>
-  )
+    <BrowserRouter>
+      <AuthProvider>
+        <ToastProvider>
+          <div className="min-h-screen bg-gray-50">
+            <Navbar />
+            <AppRoutes />
+          </div>
+        </ToastProvider>
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }

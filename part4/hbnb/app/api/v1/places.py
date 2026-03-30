@@ -82,6 +82,29 @@ class PlaceResource(Resource):
             'amenities': [amenity.to_dict() for amenity in place.amenities]
         }, 200
 
+    @api.response(200, 'Place deleted successfully')
+    @api.response(403, 'Unauthorized action')
+    @api.response(404, 'Place not found')
+    @jwt_required()
+    def delete(self, place_id):
+        """Delete a place (owner or admin only)"""
+        current_user_id = get_jwt_identity()
+        current_user = get_jwt()
+        is_admin = current_user.get('is_admin', False)
+
+        existing_place = facade.get_place(place_id)
+        if not existing_place:
+            api.abort(404, "Place not found")
+
+        if not is_admin and existing_place.owner_id != current_user_id:
+            return {'error': 'Unauthorized action'}, 403
+
+        try:
+            facade.delete_place(place_id)
+            return {'message': 'Place deleted successfully'}, 200
+        except ValueError as e:
+            return {'error': str(e)}, 404
+
     @api.expect(place_model)
     @api.response(200, 'Place updated successfully')
     @api.response(403, 'Unauthorized action')

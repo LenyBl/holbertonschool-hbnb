@@ -169,3 +169,10 @@ class HBnBFacade:
         self.get_review(review_id)
         self.review_repo.delete(review_id)
         return True
+
+    def delete_place(self, place_id):
+        place = self.get_place(place_id)
+        if not place:
+            raise ValueError("Place not found")
+        self.place_repo.delete(place_id)
+        return True

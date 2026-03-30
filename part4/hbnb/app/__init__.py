@@ -1,5 +1,6 @@
 from flask import Flask, redirect
 from flask_restx import Api
+from flask_cors import CORS
 from app.extensions import db, bcrypt, jwt
 from app.api.v1.users import api as users_ns
 from app.api.v1.amenities import api as amenities_ns
@@ -12,6 +13,14 @@ def create_app(config_class="config.DevelopmentConfig"):
 
     app = Flask(__name__)
     app.config.from_object(config_class)
+    app.url_map.strict_slashes = False
+
+    CORS(app,
+         origins=["http://localhost:5173", "http://localhost:5174",
+                  "http://127.0.0.1:5173", "http://127.0.0.1:5174"],
+         supports_credentials=True,
+         allow_headers=["Authorization", "Content-Type", "Accept"],
+         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"])
 
     db.init_app(app)
 
