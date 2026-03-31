@@ -15,20 +15,23 @@ user_model = api.model('User', {
 
 @api.route('/')
 class UserList(Resource):
+    @api.response(200, 'Users list retrieved successfully')
+    @api.response(403, 'Admin privileges required')
+    @jwt_required()
+    def get(self):
+        """Get all users (admin only)"""
+        current_user = get_jwt()
+        if not current_user.get('is_admin', False):
+            return {'error': 'Admin privileges required'}, 403
+        users = facade.get_all_users()
+        return [{'id': u.id, 'first_name': u.first_name, 'last_name': u.last_name, 'email': u.email, 'is_admin': u.is_admin} for u in users], 200
+
     @api.expect(user_model, validate=True)
     @api.response(201, 'User successfully created')
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
-    @api.response(403, 'Admin privileges required')
-    @jwt_required()
     def post(self):
-        """Register a new user (admin only)"""
-        current_user = get_jwt()
-        
-        # Check if user is an admin
-        if not current_user.get('is_admin', False):
-            return {'error': 'Admin privileges required'}, 403
-        
+        """Register a new user"""
         user_data = api.payload
 
         # Simulate email uniqueness check (to be replaced by real validation with persistence)
@@ -85,3 +88,18 @@ class UserResource(Resource):
         except (ValueError, TypeError) as e:
             return {'error': str(e)}, 400
         return {'id': updated_user.id, 'first_name': updated_user.first_name, 'last_name': updated_user.last_name, 'email': updated_user.email}, 200
+
+    @api.response(200, 'User deleted successfully')
+    @api.response(403, 'Admin privileges required')
+    @api.response(404, 'User not found')
+    @jwt_required()
+    def delete(self, user_id):
+        """Delete user by ID (admin only)"""
+        current_user = get_jwt()
+        if not current_user.get('is_admin', False):
+            return {'error': 'Admin privileges required'}, 403
+        user = facade.get_user(user_id)
+        if not user:
+            return {'error': 'User not found'}, 404
+        facade.delete_user(user_id)
+        return {'message': 'User deleted successfully'}, 200

@@ -149,19 +149,34 @@ export default function Navbar() {
                 </AnimatePresence>
               </div>
             ) : (
-              <Link to="/login">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
-                    transparent
-                      ? 'bg-white text-rose-600 hover:bg-rose-50'
-                      : 'bg-linear-to-r from-rose-500 to-pink-600 text-white hover:shadow-lg hover:shadow-rose-200'
-                  }`}
-                >
-                  Connexion
-                </motion.button>
-              </Link>
+              <div className="flex items-center gap-2">
+                <Link to="/register">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                      transparent
+                        ? 'text-white/80 hover:text-white hover:bg-white/10'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`}
+                  >
+                    Créer un compte
+                  </motion.button>
+                </Link>
+                <Link to="/login">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+                      transparent
+                        ? 'bg-white text-rose-600 hover:bg-rose-50'
+                        : 'bg-linear-to-r from-rose-500 to-pink-600 text-white hover:shadow-lg hover:shadow-rose-200'
+                    }`}
+                  >
+                    Connexion
+                  </motion.button>
+                </Link>
+              </div>
             )}
           </div>
 
@@ -199,7 +214,10 @@ export default function Navbar() {
                 </>
               )}
               {!isAuthenticated && (
-                <Link to="/login" className="px-3 py-2 rounded-lg bg-rose-500 text-white text-sm font-semibold text-center">Connexion</Link>
+                <>
+                  <Link to="/register" className="px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-50 text-sm font-medium text-center">Créer un compte</Link>
+                  <Link to="/login" className="px-3 py-2 rounded-lg bg-rose-500 text-white text-sm font-semibold text-center">Connexion</Link>
+                </>
               )}
             </div>
           </motion.div>

@@ -1,26 +1,30 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import api from '../utils/api';
 
-export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function RegisterPage() {
+  const [form, setForm] = useState({ first_name: '', last_name: '', email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
-  const { login, loading } = useAuth();
+  const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
 
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await login(email, password);
-    if (result.success) {
-      toast.success('Connexion réussie ! Bienvenue 👋');
-      navigate('/places');
-    } else {
-      toast.error(result.error);
+    setLoading(true);
+    try {
+      await api.post('/users/', form);
+      toast.success('Compte créé avec succès ! Vous pouvez vous connecter.');
+      navigate('/login');
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Erreur lors de la création du compte');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,13 +54,13 @@ export default function LoginPage() {
               <span className="font-bold text-2xl">HBnB</span>
             </Link>
             <h2 className="text-4xl font-bold mb-4 leading-tight">
-              Trouvez votre<br />
+              Rejoignez<br />
               <span className="bg-gradient-to-r from-rose-400 to-orange-400 bg-clip-text text-transparent">
-                chez-vous ailleurs
+                la communauté
               </span>
             </h2>
             <p className="text-white/60 text-lg leading-relaxed max-w-sm">
-              Connectez-vous pour accéder à des milliers de logements et commencer votre aventure.
+              Créez votre compte pour publier et découvrir des logements partout dans le monde.
             </p>
             <div className="mt-12 flex items-center gap-4">
               {[
@@ -88,10 +92,37 @@ export default function LoginPage() {
               <span className="font-bold text-xl text-gray-900">HBnB</span>
             </Link>
 
-            <h1 className="text-2xl font-bold text-gray-900 mb-1">Connexion</h1>
-            <p className="text-gray-500 text-sm mb-8">Bienvenue ! Entrez vos identifiants.</p>
+            <h1 className="text-2xl font-bold text-gray-900 mb-1">Créer un compte</h1>
+            <p className="text-gray-500 text-sm mb-8">Rejoignez HBnB en quelques secondes.</p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="flex gap-3">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Prénom</label>
+                  <input
+                    type="text"
+                    name="first_name"
+                    value={form.first_name}
+                    onChange={handleChange}
+                    required
+                    placeholder="Jean"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all bg-gray-50 focus:bg-white"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Nom</label>
+                  <input
+                    type="text"
+                    name="last_name"
+                    value={form.last_name}
+                    onChange={handleChange}
+                    required
+                    placeholder="Dupont"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all bg-gray-50 focus:bg-white"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
                 <div className="relative">
@@ -102,10 +133,11 @@ export default function LoginPage() {
                   </div>
                   <input
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
                     required
-                    placeholder="admin@example.com"
+                    placeholder="jean@example.com"
                     className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all bg-gray-50 focus:bg-white"
                   />
                 </div>
@@ -121,8 +153,9 @@ export default function LoginPage() {
                   </div>
                   <input
                     type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    name="password"
+                    value={form.password}
+                    onChange={handleChange}
                     required
                     placeholder="••••••••"
                     className="w-full pl-11 pr-12 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all bg-gray-50 focus:bg-white"
@@ -156,26 +189,20 @@ export default function LoginPage() {
                 {loading ? (
                   <>
                     <LoadingSpinner size="sm" />
-                    <span>Connexion...</span>
+                    <span>Création...</span>
                   </>
                 ) : (
-                  'Se connecter'
+                  "Créer mon compte"
                 )}
               </motion.button>
             </form>
 
             <p className="mt-6 text-center text-sm text-gray-500">
-              Pas encore de compte ?{' '}
-              <Link to="/register" className="text-rose-600 font-medium hover:underline">
-                Créer un compte
+              Déjà un compte ?{' '}
+              <Link to="/login" className="text-rose-600 font-medium hover:underline">
+                Se connecter
               </Link>
             </p>
-
-            <div className="mt-6 p-4 bg-amber-50 rounded-xl border border-amber-100">
-              <p className="text-amber-700 text-xs font-medium mb-1">Compte de démonstration</p>
-              <p className="text-amber-600 text-xs">Email : <code className="bg-amber-100 px-1 rounded">admin@example.com</code></p>
-              <p className="text-amber-600 text-xs">Mot de passe : <code className="bg-amber-100 px-1 rounded">admin123</code></p>
-            </div>
           </motion.div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import { ToastProvider } from './contexts/ToastContext';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import PlacesPage from './pages/PlacesPage';
 import PlaceDetailPage from './pages/PlaceDetailPage';
 import CreateEditPlacePage from './pages/CreateEditPlacePage';
@@ -18,6 +19,7 @@ function AppRoutes() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/places" element={<PlacesPage />} />
         <Route path="/places/new" element={<CreateEditPlacePage />} />
         <Route path="/places/:id" element={<PlaceDetailPage />} />
