@@ -2,4 +2,9 @@ part2/hbnb/app/__pycache__/__init__.cpython-313.pyc
 
 *.pyc
 .venv
+venv/
 tmpclaude-b23a-cwd
+part3/hbnb/test_secured.sh
+part3/hbnb/instance/*
+instance/*
+part3/hbnb/instance/development.db
