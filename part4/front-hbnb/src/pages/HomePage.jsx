@@ -27,18 +27,36 @@ function AnimatedCounter({ target, suffix = '' }) {
 }
 
 const categories = [
-  { icon: '🏖️', label: 'Plage', color: 'from-cyan-400 to-blue-500' },
-  { icon: '🏔️', label: 'Montagne', color: 'from-emerald-400 to-teal-600' },
-  { icon: '🏙️', label: 'Ville', color: 'from-violet-400 to-purple-600' },
-  { icon: '🌲', label: 'Nature', color: 'from-green-400 to-emerald-600' },
-  { icon: '🏡', label: 'Campagne', color: 'from-amber-400 to-orange-500' },
-  { icon: '🌊', label: 'Lac', color: 'from-sky-400 to-cyan-600' },
+  {
+    icon: <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>,
+    label: 'Plage', color: 'from-sky-400 to-cyan-500',
+  },
+  {
+    icon: <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 20h18M5 20L10 9l3 5 2-4 4 9" /></svg>,
+    label: 'Montagne', color: 'from-slate-500 to-slate-700',
+  },
+  {
+    icon: <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>,
+    label: 'Ville', color: 'from-violet-500 to-indigo-600',
+  },
+  {
+    icon: <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 22c0-5-4-7-4-11a4 4 0 018 0c0 4-4 6-4 11zM12 11v11" /></svg>,
+    label: 'Nature', color: 'from-emerald-400 to-green-600',
+  },
+  {
+    icon: <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>,
+    label: 'Campagne', color: 'from-amber-400 to-orange-500',
+  },
+  {
+    icon: <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10c2 0 3.5-1.5 5.5-1.5S12 10 14 10s3.5-1.5 5.5-1.5M3 16c2 0 3.5-1.5 5.5-1.5S12 16 14 16s3.5-1.5 5.5-1.5" /></svg>,
+    label: 'Lac', color: 'from-blue-400 to-indigo-500',
+  },
 ];
 
 const steps = [
-  { icon: '🔍', title: 'Explorez', desc: 'Découvrez des milliers de logements uniques à travers le monde' },
-  { icon: '📅', title: 'Réservez', desc: 'Choisissez vos dates et confirmez votre séjour en quelques clics' },
-  { icon: '✈️', title: 'Voyagez', desc: 'Profitez de votre hébergement et créez des souvenirs inoubliables' },
+  { icon: <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>, title: 'Explorez', desc: 'Découvrez des milliers de logements uniques à travers le monde' },
+  { icon: <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>, title: 'Réservez', desc: 'Choisissez vos dates et confirmez votre séjour en quelques clics' },
+  { icon: <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>, title: 'Voyagez', desc: 'Profitez de votre hébergement et créez des souvenirs inoubliables' },
 ];
 
 export default function HomePage() {
@@ -197,33 +215,43 @@ export default function HomePage() {
       </section>
 
       {/* Categories */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-14"
           >
+            <span className="inline-block text-xs font-semibold tracking-widest text-rose-500 uppercase mb-3">Destinations</span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Explorez par type</h2>
-            <p className="text-gray-500 text-lg">Chaque destination, un monde à découvrir</p>
+            <p className="text-gray-400 text-base max-w-md mx-auto">Chaque destination, un monde à découvrir</p>
           </motion.div>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             {categories.map((cat, i) => (
               <motion.div
                 key={cat.label}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.07 }}
-                whileHover={{ scale: 1.08, y: -4 }}
+                transition={{ delay: i * 0.08, ease: 'easeOut' }}
+                whileHover={{ y: -10, scale: 1.02 }}
                 onClick={() => navigate('/places')}
-                className="cursor-pointer"
+                className="cursor-pointer group"
               >
-                <div className={`bg-gradient-to-br ${cat.color} rounded-2xl aspect-square flex flex-col items-center justify-center gap-2 shadow-md hover:shadow-xl transition-shadow`}>
-                  <span className="text-3xl">{cat.icon}</span>
+                <div className={`relative bg-gradient-to-br ${cat.color} rounded-3xl h-44 flex flex-col items-center justify-center overflow-hidden shadow-md group-hover:shadow-2xl transition-all duration-500`}>
+                  {/* Shine */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/25 via-transparent to-black/15 pointer-events-none" />
+                  {/* Orbs */}
+                  <div className="absolute -top-10 -right-10 w-28 h-28 bg-white/15 rounded-full blur-sm" />
+                  <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-black/10 rounded-full" />
+                  <div className="relative z-10 flex flex-col items-center gap-3">
+                    <div className="p-3.5 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/30 shadow-inner group-hover:bg-white/30 transition-colors duration-300">
+                      {cat.icon}
+                    </div>
+                    <span className="text-white font-semibold text-sm tracking-wide drop-shadow-sm">{cat.label}</span>
+                  </div>
                 </div>
-                <p className="text-center text-sm font-medium text-gray-700 mt-2">{cat.label}</p>
               </motion.div>
             ))}
           </div>
@@ -284,7 +312,7 @@ export default function HomePage() {
                 transition={{ delay: i * 0.15 }}
                 className="text-center"
               >
-                <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10 flex items-center justify-center text-3xl mx-auto mb-5">
+                <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10 flex items-center justify-center mx-auto mb-5">
                   {step.icon}
                 </div>
                 <div className="flex items-center justify-center mb-3">

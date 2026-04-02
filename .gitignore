@@ -8,3 +8,4 @@ part3/hbnb/test_secured.sh
 part3/hbnb/instance/*
 instance/*
 part3/hbnb/instance/development.db
+.claude
