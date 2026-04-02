@@ -215,7 +215,7 @@ export default function PlacesPage() {
           </div>
         ) : filtered.length === 0 ? (
           <EmptyState
-            icon="🔍"
+            icon={<svg className="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>}
             title="Aucun logement trouvé"
             description="Essayez de modifier vos filtres pour trouver ce que vous cherchez."
             action={isAuthenticated ? { to: '/places/new', label: 'Publier un logement' } : undefined}
