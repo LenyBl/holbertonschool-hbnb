@@ -4,13 +4,14 @@ A full-stack vacation rental application inspired by Airbnb, built as part of th
 
 ## Project Structure
 
-This project is divided into 3 parts, each representing a phase of development:
+This project is divided into 4 parts, each representing a phase of development:
 
 ```
 holbertonschool-hbnb/
 ├── part1/          # Architecture & Design
 ├── part2/          # Basic API Implementation
 ├── part3/          # Full-stack with Database & Auth
+├── part4/          # Frontend React Application
 └── README.md
 ```
 
@@ -37,6 +38,15 @@ holbertonschool-hbnb/
 - Role-based access control (Admin/User)
 - Extended repository methods
 
+### Part 4 - Frontend Application
+
+- React 18 + Vite
+- Tailwind CSS for styling
+- React Router for navigation
+- Axios for API communication
+- Leaflet for interactive maps
+- Framer Motion for animations
+
 ---
 
 ## Features
@@ -45,6 +55,8 @@ holbertonschool-hbnb/
 - **Places**: List properties with location, price, and amenities
 - **Reviews**: Rate and review places (1-5 stars)
 - **Amenities**: Manage property features (WiFi, Pool, AC, etc.)
+- **Interactive Map**: Browse places on a Leaflet map
+- **Responsive UI**: Mobile-friendly interface with Tailwind CSS
 
 ---
 
@@ -52,6 +64,10 @@ holbertonschool-hbnb/
 
 | Layer | Technology |
 |-------|------------|
+| Frontend | React 18, Vite, Tailwind CSS |
+| Maps | Leaflet / React-Leaflet |
+| HTTP Client | Axios |
+| Animations | Framer Motion |
 | Backend | Python, Flask |
 | API | Flask-RESTX (Swagger docs) |
 | Database | SQLAlchemy (SQLite / MySQL) |
@@ -62,9 +78,11 @@ holbertonschool-hbnb/
 
 ## Quick Start
 
+### Backend (Part 3 / Part 4)
+
 ```bash
 # Clone the repository
-git clone https://github.com/<username>/holbertonschool-hbnb.git
+git clone https://github.com/LenyBl/holbertonschool-hbnb.git
 cd holbertonschool-hbnb
 
 # Create virtual environment
@@ -73,14 +91,24 @@ source .venv/bin/activate  # Linux/Mac
 .venv\Scripts\activate     # Windows
 
 # Install dependencies
-cd part3/hbnb
+cd part4/hbnb
 pip install -r requirements.txt
 
-# Run the application
+# Run the backend
 python run.py
 ```
 
 API available at: `http://localhost:5000/api/v1/`
+
+### Frontend (Part 4)
+
+```bash
+cd part4/front-hbnb
+npm install
+npm run dev
+```
+
+Frontend available at: `http://localhost:5173/`
 
 ---
 
@@ -133,7 +161,7 @@ places (N) >──< amenities (N)
 ## Testing
 
 ```bash
-cd part3/hbnb
+cd part4/hbnb
 
 # Run unit tests
 python -m pytest
@@ -146,12 +174,19 @@ python -m pytest
 
 ## Project Requirements
 
+### Backend
 - Python 3.8+
 - Flask
 - Flask-RESTX
 - Flask-SQLAlchemy
 - Flask-JWT-Extended
 - Flask-Bcrypt
+
+### Frontend
+- Node.js 18+
+- React 18
+- Vite
+- Tailwind CSS
 
 ---
 
