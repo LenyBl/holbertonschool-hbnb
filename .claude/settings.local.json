@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(find /f/projects/holbertonschool-hbnb/part4/front-hbnb -type d ! -path */node_modules/* ! -path */.vite/*)",
-      "Bash(npm run:*)"
-    ]
-  }
-}
