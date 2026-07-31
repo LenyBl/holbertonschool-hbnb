@@ -144,7 +144,7 @@ export default function PlaceDetailPage() {
                 whileTap={{ scale: 0.95 }}
                 className="flex items-center gap-2 bg-white/90 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-full text-sm font-medium shadow-md hover:bg-white transition-colors"
               >
-                ✏️ Modifier
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg> Modifier
               </motion.button>
             </Link>
             <motion.button
@@ -153,7 +153,7 @@ export default function PlaceDetailPage() {
               onClick={() => setDeleteModalOpen(true)}
               className="flex items-center gap-2 bg-rose-500/90 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium shadow-md hover:bg-rose-600 transition-colors"
             >
-              🗑️ Supprimer
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg> Supprimer
             </motion.button>
           </div>
         )}
@@ -237,7 +237,7 @@ export default function PlaceDetailPage() {
                         transition={{ delay: i * 0.05 }}
                         className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100"
                       >
-                        <span className="text-lg">✓</span>
+                        <svg className="w-4 h-4 text-rose-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
                         <span className="text-sm font-medium text-gray-700">{amenity.name}</span>
                       </motion.div>
                     ))}
@@ -280,19 +280,19 @@ export default function PlaceDetailPage() {
                   )}
                   {isAuthenticated && isOwner && (
                     <span className="flex items-center gap-1.5 text-xs text-amber-600 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full">
-                      🏠 Votre logement
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg> Votre logement
                     </span>
                   )}
                   {isAuthenticated && !isOwner && alreadyReviewed && (
                     <span className="flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
-                      ✓ Avis déjà publié
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg> Avis déjà publié
                     </span>
                   )}
                 </div>
 
                 {reviews.length === 0 ? (
                   <div className="text-center py-12 bg-gray-50 rounded-2xl">
-                    <div className="text-4xl mb-3">💬</div>
+                    <div className="mb-3 flex justify-center text-gray-300"><svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg></div>
                     <p className="text-gray-500 text-sm">Aucun avis pour le moment.</p>
                     {canReview && (
                       <button onClick={() => setReviewModalOpen(true)} className="text-rose-500 text-sm font-medium mt-2 hover:text-rose-600">
@@ -359,9 +359,9 @@ export default function PlaceDetailPage() {
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full py-3.5 bg-gray-900 text-white rounded-xl font-semibold text-sm"
+                        className="w-full py-3.5 bg-gray-900 text-white rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
                       >
-                        ✏️ Modifier le logement
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg> Modifier le logement
                       </motion.button>
                     </Link>
                   </div>
@@ -438,7 +438,7 @@ export default function PlaceDetailPage() {
       <Modal isOpen={deleteModalOpen} onClose={() => setDeleteModalOpen(false)} title="Supprimer ce logement">
         <div className="space-y-4">
           <div className="flex items-start gap-3 p-4 bg-rose-50 rounded-xl border border-rose-100">
-            <span className="text-2xl mt-0.5">⚠️</span>
+            <svg className="w-5 h-5 mt-0.5 text-rose-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
             <div>
               <p className="text-sm font-semibold text-rose-800">Action irréversible</p>
               <p className="text-sm text-rose-700 mt-1">
@@ -463,7 +463,7 @@ export default function PlaceDetailPage() {
               {deleting ? (
                 <><LoadingSpinner size="sm" /> Suppression...</>
               ) : (
-                '🗑️ Confirmer la suppression'
+                <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg> Confirmer la suppression</>
               )}
             </motion.button>
           </div>

@@ -160,10 +160,10 @@ export default function AdminPage() {
   if (loading) return <PageLoader />;
 
   const statCards = [
-    { label: 'Logements', value: stats.places, icon: '🏠', color: 'from-rose-400 to-pink-500' },
-    { label: 'Équipements', value: stats.amenities, icon: '✨', color: 'from-violet-400 to-purple-500' },
-    { label: 'Avis', value: stats.reviews, icon: '⭐', color: 'from-amber-400 to-orange-500' },
-    { label: 'Utilisateurs', value: stats.users, icon: '👤', color: 'from-emerald-400 to-teal-500' },
+    { label: 'Logements', value: stats.places, icon: <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>, color: 'from-rose-400 to-pink-500' },
+    { label: 'Équipements', value: stats.amenities, icon: <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>, color: 'from-violet-400 to-purple-500' },
+    { label: 'Avis', value: stats.reviews, icon: <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>, color: 'from-amber-400 to-orange-500' },
+    { label: 'Utilisateurs', value: stats.users, icon: <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>, color: 'from-emerald-400 to-teal-500' },
   ];
 
   return (
@@ -173,7 +173,7 @@ export default function AdminPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
             <div className="flex items-center gap-3 mb-2">
-              <span className="text-2xl">🛡️</span>
+              <svg className="w-6 h-6 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
               <h1 className="text-2xl font-bold">Administration</h1>
             </div>
             <p className="text-gray-400 text-sm">Gérez les équipements et surveillez l'activité de la plateforme.</p>
@@ -209,7 +209,7 @@ export default function AdminPage() {
                   transition={{ delay: i * 0.07 }}
                   className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100"
                 >
-                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center text-xl mb-3`}>
+                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center mb-3`}>
                     {card.icon}
                   </div>
                   <div className="text-2xl font-bold text-gray-900">{card.value}</div>
@@ -222,14 +222,14 @@ export default function AdminPage() {
               <h2 className="font-bold text-gray-900 mb-4">Actions rapides</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <motion.button whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} onClick={() => setActiveTab(1)} className="flex items-center gap-3 p-4 bg-gray-50 hover:bg-gray-100 rounded-xl text-left transition-colors">
-                  <span className="text-2xl">✨</span>
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center shrink-0"><svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg></div>
                   <div>
                     <p className="font-semibold text-gray-900 text-sm">Gérer les équipements</p>
                     <p className="text-xs text-gray-500">{stats.amenities} équipement(s)</p>
                   </div>
                 </motion.button>
                 <motion.button whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} onClick={() => setActiveTab(2)} className="flex items-center gap-3 p-4 bg-gray-50 hover:bg-gray-100 rounded-xl text-left transition-colors">
-                  <span className="text-2xl">👤</span>
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shrink-0"><svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></div>
                   <div>
                     <p className="font-semibold text-gray-900 text-sm">Gérer les utilisateurs</p>
                     <p className="text-xs text-gray-500">{stats.users} utilisateur(s)</p>
@@ -257,7 +257,7 @@ export default function AdminPage() {
 
             {amenities.length === 0 ? (
               <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
-                <p className="text-4xl mb-3">✨</p>
+                <div className="flex justify-center mb-3 text-gray-300"><svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg></div>
                 <p className="text-gray-500 text-sm">Aucun équipement. Créez-en un !</p>
               </div>
             ) : (
@@ -274,7 +274,7 @@ export default function AdminPage() {
                         className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center text-sm">✨</div>
+                          <div className="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center"><svg className="w-4 h-4 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg></div>
                           <div>
                             <p className="font-medium text-gray-900 text-sm">{a.name}</p>
                             <p className="text-xs text-gray-400">ID: {a.id?.slice(0, 8)}...</p>
@@ -285,7 +285,7 @@ export default function AdminPage() {
                             onClick={() => openEditAmenity(a)}
                             className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                           >
-                            ✏️ Modifier
+                            <svg className="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg> Modifier
                           </button>
                           <button
                             onClick={() => setDeleteModal({ open: true, id: a.id })}
@@ -320,7 +320,7 @@ export default function AdminPage() {
 
             {users.length === 0 ? (
               <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
-                <p className="text-4xl mb-3">👤</p>
+                <div className="flex justify-center mb-3 text-gray-300"><svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></div>
                 <p className="text-gray-500 text-sm">Aucun utilisateur.</p>
               </div>
             ) : (
@@ -353,7 +353,7 @@ export default function AdminPage() {
                             onClick={() => openEditUser(u)}
                             className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                           >
-                            ✏️ Modifier
+                            <svg className="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg> Modifier
                           </button>
                           <button
                             onClick={() => setDeleteUserModal({ open: true, id: u.id })}

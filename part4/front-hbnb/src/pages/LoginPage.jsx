@@ -170,12 +170,6 @@ export default function LoginPage() {
                 Créer un compte
               </Link>
             </p>
-
-            <div className="mt-6 p-4 bg-amber-50 rounded-xl border border-amber-100">
-              <p className="text-amber-700 text-xs font-medium mb-1">Compte de démonstration</p>
-              <p className="text-amber-600 text-xs">Email : <code className="bg-amber-100 px-1 rounded">admin@example.com</code></p>
-              <p className="text-amber-600 text-xs">Mot de passe : <code className="bg-amber-100 px-1 rounded">admin123</code></p>
-            </div>
           </motion.div>
         </div>
       </div>
